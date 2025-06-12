@@ -1,0 +1,636 @@
+openapi: 3.0.0
+info:
+  title: API de Red Social
+  version: "1.0.0"
+  description: Documentación de la API para la red social
+servers:
+  - url: http://localhost:3001
+components:
+  responses:
+    
+      Unauthorized:
+        description: (Unauthorized) No hay autorización para llamar al servicio
+      
+      NotFound:
+        description: (NotFound) No se encontro información
+      
+      BadRequest:
+        description: (Bad Request) Los datos enviados son incorrectos o hay datos obligatorios no enviados
+        
+      ServerError:
+        description: Error en servidor
+  schemas:
+    User:
+      type: object
+      properties:
+        nickName:
+          type: string
+          example: usuario123
+        email:
+          type: string
+          example: usuario@example.com
+        password:
+          type: string
+          example: usuario123
+    Post:
+      type: object
+      properties:
+        descripcion:
+          type: string
+          example: Este es un nuevo post
+    Comment:
+      type: object
+      required:
+        - nickName
+        - postId
+        - descripcion
+        - comentario
+      properties:
+        nickName:
+          type: string
+          example: "1"
+        postId:
+          type: integer
+          example: 1
+        descripcion:
+          type: string
+          example: "buen meme."
+        comentario:
+          type: string
+          example: "Que buen meme subistes!"
+    Tag:
+      type: object
+      properties:
+        nombre:
+          type: string
+          example: Etiqueta1
+    CommentTag:
+      type: object
+      properties:
+        postId:
+          type: string
+          example: Este es un ejemplo
+        tagId:
+          type: string
+          example: Este es un ejemplo
+    Image:
+      type: object
+      properties:
+        urlImg:
+          type: string
+          example: "/uploads/imagenes-1620123456789.jpg"
+          description: Ruta de la imagen almacenada
+paths:
+  /users:
+    get:
+      summary: Obtener todos los usuarios
+      tags:
+        - Users
+      responses:
+        200:
+          description: Lista de usuarios
+        204:
+          description: No hay contenido
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Crear un nuevo usuario
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+  /users/{id}:
+    put:
+      summary: Actualizar un usuario por ID
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario actualizado exitosamente
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/ServerError'
+        404:
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Eliminar un usuario por ID
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Usuario eliminado exitosamente
+        404:
+          $ref: '#/components/responses/NotFound'
+  /posts:
+    get:
+      summary: Obtener todas las publicaciones
+      tags:
+        - Posts
+      responses:
+        '200':
+          description: Lista de publicaciones
+        '204':
+          description: No hay contenido
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      summary: Crear nuevo post
+      tags:
+        - Posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                descripcion:
+                  type: string
+                  example: "Este es un post de ejemplo"
+                nickName:
+                  type: string
+                  example: "1"
+              required:
+                - descripcion
+                - nickName
+      responses:
+        '201':
+          description: Publicación creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  descripcion:
+                    type: string
+                    example: "Este es un nuevo post"
+                  fecha:
+                    type: string
+                    format: date-time
+                    example: '2023-10-01T12:00:00Z'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          description: Tipo de archivo no permitido (solo se permiten imágenes)
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /posts/{id}:
+    get:
+      summary: Obtener una publicación por ID
+      tags:
+        - Posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Publicación encontrada
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      summary: Actualizar una publicación por ID
+      tags:
+        - Posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '201':
+          description: Publicación actualizada exitosamente
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      summary: Eliminar una publicación por ID
+      description: Elimina una publicación y todos sus recursos asociados 
+      tags:
+        - Posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Publicación eliminada exitosamente junto con todos sus recursos asociados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Publicación eliminada exitosamente junto con todos sus recursos asociados"
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /posts/{id}/images/{urlImg}:
+    delete:
+      summary: Eliminar una imagen específica de un post
+      tags:
+        - Posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del post
+        - name: urlImg
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la imagen a eliminar
+      responses:
+        '200':
+          description: Imagen eliminada exitosamente
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      summary: Actualizar una publicación con imágenes
+      tags:
+        - Posts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: Contenido actualizado del post
+                imagenes:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Nuevas imágenes para agregar al post
+      responses:
+        '200':
+          description: Publicación actualizada exitosamente
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /comments:
+    get:
+      summary: Obtener todos los comentarios
+      tags:
+        - Comments
+      responses:
+        '200':
+          description: Lista de comentarios
+        '204':
+          description: No hay contenido
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Crear un nuevo comentario
+      tags:
+        - Comments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Comentario creado exitosamente
+  /comments/{id}:
+    put:
+      summary: Actualizar un comentario por ID
+      tags:
+        - Comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Comentario actualizado exitosamente
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      summary: Eliminar un comentario por ID
+      tags:
+        - Comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Comentario eliminado exitosamente
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+  /tags:
+    get:
+      summary: Obtener todas las etiquetas
+      tags:
+        - Tags
+      responses:
+        '200':
+          description: Lista de etiquetas
+        '204':
+          description: No hay contenido
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Crear una nueva etiqueta
+      tags:
+        - Tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Etiqueta creada exitosamente
+  /tags/{id}:
+    put:
+      summary: Actualizar una etiqueta por ID
+      tags:
+        - Tags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la etiqueta a actualizar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Etiqueta actualizada exitosamente
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      summary: Eliminar una etiqueta por ID
+      tags:
+        - Tags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la etiqueta a eliminar
+      responses:
+        '204':
+          description: Etiqueta eliminada exitosamente
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+  /comment-tags:
+    post:
+      summary: Asignar un tag a un post
+      tags:
+        - CommentTags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentTag'
+      responses:
+        '201':
+          description: Relación creada exitosamente
+    delete:
+      summary: Eliminar un tag de un post
+      tags:
+        - CommentTags
+      responses:
+        '204':
+          description: Relación eliminada exitosamente
+  /comment-tags/post/{postId}:
+    get:
+      summary: Obtener todos los tags de un post
+      tags:
+        - CommentTags
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del post para obtener sus tags
+      responses:
+        '200':
+          description: Lista de tags asociados al post
+        '204':
+          description: No hay contenido
+        500:
+          $ref: '#/components/responses/ServerError'
+  /images:
+    get:
+      summary: Obtener todos los archivos
+      tags:
+        - Image
+      responses:
+        '200':
+          description: Listado de archivos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+        '204':
+          description: No hay archivos
+        500:
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Crear nuevos archivos asociados a un post
+      tags:
+        - Image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                urlImg:
+                  type: string
+                  example: "/uploads/imagenes-1620123456789.jpg"
+                  description: Ruta de la imagen almacenada
+      responses:
+        '201':
+          description: Archivos creados exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          description: El archivo es demasiado grande 
+        '415':
+          description: Tipo de archivo no permitido 
+        500:
+          $ref: '#/components/responses/ServerError'
+  /Images/{urlImg}:
+    put:
+      summary: Actualizar un archivo existente
+      tags:
+        - Image
+      parameters:
+        - name: urlImg
+          in: path
+          required: true
+          description: ID del archivo a actualizar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imagenes:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - imagenes
+      responses:
+        '200':
+          description: Archivo actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+    delete:
+      summary: Eliminar un archivo
+      tags:
+        - Image
+      parameters:
+        - name: urlImg
+          in: path
+          required: true
+          description: ID del archivo a eliminar
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Archivo eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Archivo eliminado correctamente"
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'

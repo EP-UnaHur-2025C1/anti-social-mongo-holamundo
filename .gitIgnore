@@ -1,0 +1,6 @@
+node_modules
+# Ignore database files
+*.db
+*.sqlite
+src/db/data/data.db
+data/data.db

@@ -1,22 +1,20 @@
 const existsModelById = (modelo) => {
   return async (req, res, next) => {
-    const id = req.params.id;
-    const data = await modelo.findByPk(id);
+    const { urlImg } = req.params;
+    const data = await modelo.findByPk(urlImg);
     if (!data) {
       return res
         .status(404)
-        .json({ message: `El id ${id} no se encuentra registrado` });
+        .json({ message: `El urlImg ${urlImg} no se encuentra registrado` });
     }
     next();
   };
 };
 
-const validaId = (req, res, next) => {
-  const id = req.params.id;
-  if (id <= 0) {
-    return res
-      .status(400)
-      .json({ message: "Bad Request: No pueden ser un id negativo" });
+const validaUrlImg  = (req, res, next) => {
+  const { urlImg } = req.params;
+  if (!urlImg || typeof urlImg !== "string") {
+    return res.status(400).json({ message: "Bad Request: urlImg inválido" });
   }
   next();
 };
@@ -35,4 +33,4 @@ const schemaValidator = (schema) => {
 };
 
 //module.exports = { logRequest, existsModelById, validaId, schemaValidator };
-module.exports = { existsModelById, validaId, schemaValidator };
+module.exports = { existsModelById, validaUrlImg, schemaValidator };

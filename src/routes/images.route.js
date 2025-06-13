@@ -2,7 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const imageController= require("../controllers/images.controller");
 const imageMiddleware= require("../middlewares/image.middleware");
-const { Images} = require("../db/models/images");
+const { Images} = require("../db/models");
 const imageSchema = require("../schemas/image.schema");
 
 router.get("/", imageController.getImages);
@@ -12,13 +12,13 @@ router.post(
   imageMiddleware.schemaValidator(imageSchema),
   imageController.createImage
 );
-router.put('/:id', 
-    imageMiddleware.validaId,
-    imageController.updateImage,
+router.put('/:urlImg', 
+    imageMiddleware.validaUrlImg,
+    imageController.updateImage
     ) 
 router.delete(
-  "/:id",
-  imageMiddleware.validaId,
+  "/:urlImg", 
+  imageMiddleware.validaUrlImg,
   imageMiddleware.existsModelById(Images),
   imageController.deleteById
 );

@@ -12,13 +12,13 @@ router.post(
   tagMiddleware.schemaValidator(tagSchema),
   tagController.createTag
 );
-router.put('/:id', 
+router.put('/:urlImg', 
     tagMiddleware.validaId,
     tagMiddleware.schemaValidator(tagSchema),
     tagController.updateTag,
     ) 
 router.delete(
-  "/:id",
+  "/:urlImg",
   tagMiddleware.validaId,
   tagMiddleware.existsModelById(Tag),
   tagController.deleteById

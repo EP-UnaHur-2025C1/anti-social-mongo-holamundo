@@ -80,6 +80,9 @@ components:
           type: string
           example: "/uploads/imagenes-1620123456789.jpg"
           description: Ruta de la imagen almacenada
+        postId:
+          type: integer
+          example: 1
 paths:
   /users:
     get:
@@ -545,7 +548,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
@@ -553,6 +556,9 @@ paths:
                   type: string
                   example: "/uploads/imagenes-1620123456789.jpg"
                   description: Ruta de la imagen almacenada
+                postId: 
+                  type: integer
+                  example: 1
       responses:
         '201':
           description: Archivos creados exitosamente
@@ -570,7 +576,7 @@ paths:
           description: Tipo de archivo no permitido 
         500:
           $ref: '#/components/responses/ServerError'
-  /Images/{urlImg}:
+  /images/{urlImg}:
     put:
       summary: Actualizar un archivo existente
       tags:
@@ -589,12 +595,13 @@ paths:
             schema:
               type: object
               properties:
-                imagenes:
-                  type: array
-                  items:
-                    type: string
-              required:
-                - imagenes
+                urlImg:
+                  type: string
+                  example: "/uploads/imagenes-1620123456789.jpg"
+                  description: Ruta de la imagen almacenada
+                postId: 
+                  type: integer
+                  example: 1
       responses:
         '200':
           description: Archivo actualizado exitosamente

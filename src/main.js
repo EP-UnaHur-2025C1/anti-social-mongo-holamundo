@@ -2,8 +2,7 @@ const express = require("express");
 const db = require("./db/models");
 const { userRoute, commentRoute, postRoute, tagRoute, imageRoute} = require("./routes");
 const app = express();
-//const PORT = process.env.PORT || 3001;
-const PORT = 3001
+const PORT = process.env.PORT || 3001;
 
 //llamado a swaggerInit
 const swaggerInit = require("./swagger/swaggerInit.js");

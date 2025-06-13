@@ -112,6 +112,30 @@ paths:
         '201':
           description: Usuario creado exitosamente
   /users/{id}:
+    get:
+      summary: Obtener un usuario por ID
+      tags:          
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User' 
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'  
+
+          
     put:
       summary: Actualizar un usuario por ID
       tags:

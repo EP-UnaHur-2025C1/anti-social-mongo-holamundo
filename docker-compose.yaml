@@ -1,0 +1,30 @@
+services:
+  database:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  cliente:
+    image: mongo-express
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@database:27017/
+      ME_CONFIG_BASICAUTH: false
+
+  api:
+    image: apimongo:1.0.1
+    ports:
+      - 5000:4002
+    environment:
+      PORT: 4002
+      MONGO_URL: mongodb://root:example@database:27017/libros?authSource=admin
+    depends_on:
+      - database

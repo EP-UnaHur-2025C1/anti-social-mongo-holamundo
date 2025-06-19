@@ -17,6 +17,11 @@ const postSchema = new mongoose.Schema({
     type: Schema.Types.String,
     required: [true, 'La imagen es obligatoria'],
   },
+  tags: [{ // Relación incrustada con los tags
+    type: Schema.Types.ObjectId,
+    ref: 'Tag', // Relación con el modelo Tag
+    required: [true, 'El ID del tag es obligatorio']
+    }],
   userId: [{ 
     type: Schema.Types.ObjectId, 
     ref: 'Usuario' // Relación con el modelo Usuario,

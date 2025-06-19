@@ -3,8 +3,10 @@ const Post = require('../Schemas/postSchema')
 const controller = {}
 const mongoose = require('../db/mongo.db').mongoose;
 const getUsers = async (req, res) => {
-  const data = await Usuario.find({});
+  const data = await Usuario.find({}).populate('postId', 'descripcion fecha pathImg userId');
   res.status(200).json(data);
+  
+
 };
 controller.getUsers = getUsers
 

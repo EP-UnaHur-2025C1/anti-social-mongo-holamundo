@@ -10,10 +10,11 @@ app.use(express.json())
 
 app.use(routes.userRoute)
 app.use(routes.postRoute)
+app.use(routes.tagRoute)
 
 
 app.listen(PORT, async() => {
     await connectToDatabase();
     await initData();
-    console.log(` \u{1F680} Aplicación iniciada en el puerto ${PORT} - http://localhost:${PORT}/`)
+    console.log(` \u{1F680} Aplicación iniciada en el puerto ${PORT} - http://localhost:${PORT}/usuarios`)
 })

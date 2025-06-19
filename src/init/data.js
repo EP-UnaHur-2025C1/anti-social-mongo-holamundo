@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Usuario = require('../Schemas/userSchema');
 const Post = require('../Schemas/postSchema');
+const Tag = require('../Schemas/tagSchema');
 
 const initData = async() => {
     try{
@@ -10,8 +11,11 @@ const initData = async() => {
 
         await Post.deleteMany({});
         console.log('Colección de posts limpiada');
-        
+        await Tag.deleteMany({});
+        console.log('Colección deTags limpiada');
        
+        
+    
         const usuarios = await Usuario.insertMany([
             {
             nickname: "juanmabritez",
@@ -91,14 +95,29 @@ const initData = async() => {
             },
         ]);
         console.log('Posts creados correctamente');
-    
+
+        
         for (const post of posts) {
             await Usuario.findByIdAndUpdate(post.userId, {
             $push: { postId: post._id },
             });
         }
         console.log('Relaciones establecidas correctamente');
-        
+        const tags = await Tag.insertMany([
+            {
+            nombre: "#viaje",
+            postId: [posts[0]._id, posts[1]._id], // Rel
+            },
+            {
+            nombre: "#comida",
+            postId: [posts[2]._id], // Relación con el post 3
+            },
+            {
+            nombre: "#amigos",
+            postId: [posts[0]._id, posts[1]._id], // Relación con los posts 1 y 2
+            },
+        ]);
+        console.log('Tags creados correctamente');
             
     } catch(err){
         console.error('Error al inicializar los datos', err.message);

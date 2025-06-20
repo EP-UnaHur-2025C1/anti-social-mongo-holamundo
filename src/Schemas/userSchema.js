@@ -21,6 +21,14 @@ const userSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId, 
       ref: 'Post', //relacion con el modelo Post
     }],
+    seguidores: [{  
+      type: Schema.Types.ObjectId, 
+      ref: 'Usuario', // Relación con el modelo Usuario
+    }],
+    seguidos: [{  
+      type: Schema.Types.ObjectId, 
+      ref: 'Usuario', // Relación con el modelo Usuario
+    }],
   },
   {
     collection: "usuarios",

@@ -3,7 +3,23 @@ const Post = require('../Schemas/postSchema')
 const controller = {}
 const mongoose = require('../db/mongo.db').mongoose;
 const getUsers = async (req, res) => {
-  const data = await Usuario.find({}).populate('postId', 'descripcion fecha pathImg userId');
+  const data = await Usuario.find({})
+    .populate('postId', 'descripcion fecha pathImg userId comentarios')
+    .populate('postId.userId', 'nickname email pathImgPerfil')
+    .populate('seguidores', 'nickname email pathImgPerfil')
+    .populate('seguidos', 'nickname email pathImgPerfil');
+    // Filtrar los comentarios visibles
+  for (let user of data) {  
+    user.postId.forEach(post => {
+      post.comentarios = post.comentarios.filter(comentario => comentario.visible);
+      post.comentarios = post.comentarios.map(comentario => ({
+        _id: comentario._id,
+        descripcion: comentario.descripcion,
+        fecha: comentario.fecha,
+        userId: comentario.userId
+      }));
+    });
+  }
   res.status(200).json(data);
   
 
@@ -11,7 +27,10 @@ const getUsers = async (req, res) => {
 controller.getUsers = getUsers
 
 const getUserById = async (req, res) => {
-  const data = await Usuario.findById(req.params.id);
+  const data = await Usuario.findById(req.params.id).populate('postId', 'descripcion fecha pathImg userId comentarios')
+    .populate('postId.userId', 'nickname email pathImgPerfil')
+    .populate('seguidores', 'nickname email pathImgPerfil')
+    .populate('seguidos', 'nickname email pathImgPerfil');
   res.status(200).json(data);
 };
 controller.getUserById = getUserById
@@ -140,4 +159,127 @@ const getCommentsByUser = async (req, res) => {
   }
 }
 controller.getCommentsByUser = getCommentsByUser
+const addCommentsByUser = async (req, res) => {
+  const { id } = req.params; // ID del usuario
+  const { postId, descripcion } = req.body; // Datos del nuevo comentario
+  try {
+    // Verificar si el usuario existe
+    const usuarioExistente = await Usuario.findById(id);
+    if (!usuarioExistente) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }  
+    // Verificar si el post existe
+    const postExistente = await Post.findById(postId);
+    if (!postExistente) {
+      return res.status(404).json({ message: "Post no encontrado" });
+    }
+    // Crear el nuevo comentario
+    const nuevoComentario = {
+      descripcion,
+      fecha: Date.now(),  // Fecha actual
+      visible: true, // Por defecto, los comentarios son visibles
+      userId: id // Asociar el comentario al usuario
+    };
+    // Agregar el comentario al post
+    postExistente.comentarios.push(nuevoComentario);
+    await postExistente.save();
+    // Agregar el ID del comentario al array de comentarios del usuario
+    usuarioExistente.comentarios.push(nuevoComentario);
+    await usuarioExistente.save();
+    res.status(201).json(nuevoComentario);
+  } catch (error) {
+    res.status(500).json({ message: "Error al agregar el comentario", error:error.message });
+  }
+} 
+controller.addCommentsByUser = addCommentsByUser
+const getFollowers = async (req, res) => {
+  const { id } = req.params; // ID del usuario
+  try {
+    // Verificar si el usuario existe
+    const usuarioExistente = await Usuario.findById(id).populate('seguidores', 'nickname email pathImgPerfil');
+    if (!usuarioExistente) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    // Retornar los seguidores del usuario
+    res.status(200).json(usuarioExistente.seguidores);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los seguidores del usuario", error: error.message });
+  }
+}
+controller.getFollowers = getFollowers
+const getFollowing = async (req, res) => {
+  const { id } = req.params; // ID del usuario
+  try {
+    // Verificar si el usuario existe
+    const usuarioExistente = await Usuario.findById(id).populate('seguidos', 'nickname email pathImgPerfil');
+    if (!usuarioExistente) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    // Retornar los usuarios que sigue
+    res.status(200).json(usuarioExistente.seguidos);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los usuarios que sigue", error: error.message });
+  }
+} 
+controller.getFollowing = getFollowing
+const followUser = async (req, res) => {
+  const { id } = req.params; // ID del usuario que sigue
+  const { followId } = req.body; // ID del usuario a seguir
+  try {
+    // Verificar si el usuario existe
+    const usuarioExistente = await Usuario.findById(id);
+    if (!usuarioExistente) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    // Verificar si el usuario a seguir existe
+    const usuarioAFollow = await Usuario.findById(followId);
+    if (!usuarioAFollow) {
+      return res.status(404).json({ message: "Usuario a seguir no encontrado" });
+    }
+    // Verificar si ya sigue al usuario
+    if (usuarioExistente.seguidos.includes(followId)) {
+      return res.status(400).json({ message: "Ya sigues a este usuario" });
+    }
+    // Agregar al usuario a la lista de seguidos
+    usuarioExistente.seguidos.push(followId);
+    await usuarioExistente.save();
+    // Agregar al usuario a la lista de seguidores del usuario seguido
+    usuarioAFollow.seguidores.push(id);
+    await usuarioAFollow.save();
+    res.status(200).json({ message: "Usuario seguido correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al seguir al usuario", error: error.message });
+  }
+}
+controller.followUser = followUser
+const unfollowUser = async (req, res) => {
+  const { id } = req.params; // ID del usuario que deja de seguir
+  const { followId } = req.body; // ID del usuario a dejar de seguir
+  try {
+    // Verificar si el usuario existe
+    const usuarioExistente = await Usuario.findById(id);
+    if (!usuarioExistente) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    // Verificar si el usuario a dejar de seguir existe
+    const usuarioAUnfollow = await Usuario.findById(followId);
+    if (!usuarioAUnfollow) {
+      return res.status(404).json({ message: "Usuario a dejar de seguir no encontrado" });
+    }
+    // Verificar si ya no sigue al usuario
+    if (!usuarioExistente.seguidos.includes(followId)) {
+      return res.status(400).json({ message: "No sigues a este usuario" });
+    }
+    // Eliminar al usuario de la lista de seguidos
+    usuarioExistente.seguidos.pull(followId);
+    await usuarioExistente.save();
+    // Eliminar al usuario de la lista de seguidores del usuario seguido
+    usuarioAUnfollow.seguidores.pull(id);
+    await usuarioAUnfollow.save();
+    res.status(200).json({ message: "Usuario dejado de seguir correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al dejar de seguir al usuario", error: error.message });
+  }
+}
+controller.unfollowUser = unfollowUser
 module.exports = controller

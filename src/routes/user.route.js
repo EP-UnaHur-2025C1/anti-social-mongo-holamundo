@@ -48,5 +48,26 @@ router.get("/usuario/:id/comentarios",
     genericMiddleware.validateId(Usuario),
     userController.getCommentsByUser
 )
+router.post("/usuario/:id/comentarios",
+    genericMiddleware.validateId(Usuario),
+    userController.addCommentsByUser
+)
+router.get("/usuario/:id/seguidores",
+    genericMiddleware.validateId(Usuario),
+    userController.getFollowers
+)
+
+router.get("/usuario/:id/seguidos",
+    genericMiddleware.validateId(Usuario),
+    userController.getFollowing
+)
+router.post("/usuario/:id/seguidos",
+    genericMiddleware.validateId(Usuario),
+    userController.followUser
+)
+router.delete("/usuario/:id/seguidos",
+    genericMiddleware.validateId(Usuario),
+    userController.unfollowUser
+)
 
 module.exports = router

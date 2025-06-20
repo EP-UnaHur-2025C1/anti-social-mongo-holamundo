@@ -9,7 +9,7 @@ const postSchema = new mongoose.Schema({
     required: [true, 'La descripción es obligatoria'],
   },
   fecha: {
-    type: Schema.Types.Number,
+    type: Schema.Types.Date,
     required: [true, 'La fecha es obligatoria'],
     default: Date.now,
   },
@@ -39,7 +39,15 @@ const postSchema = new mongoose.Schema({
     },
     visible: {
       type: Boolean,
-      default: true, // Por defecto, los comentarios son visibles
+      //quiero que sea un atributo calculado, que sea true si la fecha del comentario es menor a la fecha máxima de comentarios la cual esta en el .env
+      validate: {
+        validator: async function() {
+          const fechaMaxima = await new Date(process.env.FECHAMAXCOMMENTS);
+          return this.fecha <= fechaMaxima;
+        },
+        message: 'La fecha del comentario debe ser menor o igual a la fecha máxima de comentarios'
+      }    
+      
     },
     userId: { 
       type: Schema.Types.ObjectId, 

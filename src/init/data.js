@@ -47,7 +47,7 @@ const initData = async() => {
             comentarios: [
                 {
                 descripcion: "buenaaa",
-                fecha: Date.now(),
+                fecha: new Date('2022-09-01T00:00:00Z'),
                 userId: usuarios[1]._id
                 },
                 {
@@ -70,7 +70,7 @@ const initData = async() => {
                 },
                 {
                 descripcion: "insolito",
-                fecha: Date.now(),
+                fecha: new Date('2023-10-01T00:00:00Z'),
                 userId: usuarios[2]._id
                 },
             ],
@@ -83,7 +83,7 @@ const initData = async() => {
             comentarios: [
                 {
                 descripcion: "cociname eso",
-                fecha: Date.now(),
+                fecha: new Date('2024-10-01T00:00:00Z'),
                 userId: usuarios[1]._id
                 },
                 {
@@ -118,7 +118,13 @@ const initData = async() => {
             },
         ]);
         console.log('Tags creados correctamente');
-            
+        await usuarios[0].updateOne({ $push: { seguidores: usuarios[1]._id } });
+        await usuarios[1].updateOne({ $push: { seguidores: usuarios[2]._id } });
+        await usuarios[2].updateOne({ $push: { seguidores: usuarios[0]._id } });
+        await usuarios[1].updateOne({ $push: { seguidos: usuarios[0]._id } });
+        await usuarios[2].updateOne({ $push: { seguidos: usuarios[1]._id } });
+        await usuarios[0].updateOne({ $push: { seguidos: usuarios[2]._id } });
+        console.log('Relaciones de seguidores y seguidos establecidas correctamente');
     } catch(err){
         console.error('Error al inicializar los datos', err.message);
     }

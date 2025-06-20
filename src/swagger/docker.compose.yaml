@@ -176,6 +176,113 @@ paths:
           description: Usuario eliminado exitosamente
         404:
           $ref: '#/components/responses/NotFound'
+  /users/{id}/follow:
+    post: 
+      summary: Seguir a un usuario
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          descripcion: ID del usuario a seguir
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seguidorId:
+                  type: integer
+                  example: 1
+                  description: ID del usuario que sigue
+      responses:
+        '201':
+          description: Ahora seguis a este usuario
+        '409':
+          description: Ya seguis a este usuario
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/ServerError'
+  /users/{id}/unfollow:
+    delete:
+      summary: Dejar de seguir a un usuario
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario a dejar de seguir
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seguidorId:
+                  type: integer
+                  example: 1
+      responses:
+        '204':
+          description: Ahora no seguis a este usuario
+        404:
+          $ref: No estas siguiendo a este usuario
+        500:
+          $ref: '#/components/responses/ServerError'
+  /users/{id}/followers:
+    get:
+      summary: Obtener una lista de seguidores
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de seguidores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        500:
+          $ref: '#/components/responses/ServerError'
+  /users/{id}/following:
+    get:
+      summary: Obtener una lista de usuarios seguidos
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de usuarios seguidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        500:
+          $ref: '#/components/responses/ServerError'
   /posts:
     get:
       summary: Obtener todas las publicaciones

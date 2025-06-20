@@ -19,13 +19,15 @@ module.exports = (sequelize, DataTypes) => {
         as: "comments",
       })
       User.belongsToMany(models.User,{
-        through: "Follow",
-        foreignKey: {name: "nickName", allowNull:false},
+        through:models.Follow,
+        foreignKey: {name: "seguidorId", allowNull:false},
+        otherKey: "seguidoId",
         as: "seguidores",
       })
       User.belongsToMany(models.User,{
-      through: "Follow",
-      foreignKey: {name: "nickName", allowNull:false},
+      through: models.Follow,
+      foreignKey: {name: "seguidoId", allowNull:false},
+      otherKey: "seguidorId",
       as: "seguidos",
       })
     }

@@ -30,5 +30,23 @@ router.delete(
   userMiddleware.existsModelById(User),
   userController.deleteById
 );
+//Follow
+router.post("/:id/follow",
+  userMiddleware.validaId,
+  userController.followUser
+);
 
+router.delete("/:id/unfollow",
+  userMiddleware.validaId,
+  userController.unfollowUser
+);
+
+router.get("/:id/followers",
+  userMiddleware.validaId,
+  userController.getFollowers
+);
+router.get("/:id/following",
+  userMiddleware.validaId,
+  userController.getFollowing
+);
 module.exports = router;

@@ -29,4 +29,5 @@ services:
       MONGO_URL: mongodb://admin:admin1234@mongodb:27017/producto?authSource=admin
     depends_on:
       - mongodb
+    
 

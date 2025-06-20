@@ -8,18 +8,9 @@ const getUsers = async (req, res) => {
     .populate('postId.userId', 'nickname email pathImgPerfil')
     .populate('seguidores', 'nickname email pathImgPerfil')
     .populate('seguidos', 'nickname email pathImgPerfil');
-    // Filtrar los comentarios visibles
-  for (let user of data) {  
-    user.postId.forEach(post => {
-      post.comentarios = post.comentarios.filter(comentario => comentario.visible);
-      post.comentarios = post.comentarios.map(comentario => ({
-        _id: comentario._id,
-        descripcion: comentario.descripcion,
-        fecha: comentario.fecha,
-        userId: comentario.userId
-      }));
-    });
-  }
+  if (!data || data.length === 0) {
+    return res.status(404).json({ message: "No se encontraron usuarios" });
+  } 
   res.status(200).json(data);
   
 

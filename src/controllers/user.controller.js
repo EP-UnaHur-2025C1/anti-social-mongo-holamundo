@@ -2,6 +2,7 @@ const Usuario = require('../Schemas/userSchema')
 const Post = require('../Schemas/postSchema')
 const controller = {}
 const mongoose = require('../db/mongo.db').mongoose;
+
 const getUsers = async (req, res) => {
   const data = await Usuario.find({})
     .populate('postId', 'descripcion fecha pathImg userId comentarios')
@@ -53,7 +54,7 @@ const updateUser = async (req, res) => {
 controller.updateUser = updateUser
 const deleteById = async (req, res) => {
   const data = await Usuario.findById(req.params.id);
-  const removed = await data.destroy();
+  const removed = await Usuario.findByIdAndDelete(req.params.id);
   res.status(200).json(removed);
 };
 

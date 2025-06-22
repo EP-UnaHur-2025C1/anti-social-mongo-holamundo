@@ -22,10 +22,10 @@ const postSchema = new mongoose.Schema({
     ref: 'Tag', // Relación con el modelo Tag
     required: [true, 'El ID del tag es obligatorio']
     }],
-  userId: [{ 
+  userId: { 
     type: Schema.Types.ObjectId, 
     ref: 'Usuario' // Relación con el modelo Usuario,
-  }],
+  },
   comentarios: [{ // Relación incrustada con los comentarios
     
     descripcion: {

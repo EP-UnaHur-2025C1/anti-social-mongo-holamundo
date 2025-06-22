@@ -14,41 +14,41 @@ router.get("/usuarios",
     userController.getUsers
 )
 
-router.get("/usuario/:id",
+router.get("/usuarios/:id",
     genericMiddleware.validateId(Usuario),
     userController.getUserById
 )
 
-router.post("/usuario",
+router.post("/usuarios",
     schemaValidator(Usuario),
     userController.createUser
 )
 
-router.put("/usuario/:id",
+router.put("/usuarios/:id",
     genericMiddleware.validateId(Usuario),
     userController.updateUser
 )
 
-router.delete("/usuario/:id",
+router.delete("/usuarios/:id",
     genericMiddleware.validateId(Usuario),
     userController.deleteById
 )
 
-router.get("/usuario/:id/posts",
+router.get("/usuarios/:id/posts",
     genericMiddleware.validateId(Usuario),
     userController.getPostsByUser
 )
 
-router.post("/usuario/:id/posts",
+router.post("/usuarios/:id/posts",
     genericMiddleware.validateId(Usuario),
     userController.addPost
 )
 
-router.get("/usuario/:id/comentarios",
+router.get("/usuarios/:id/comentarios",
     genericMiddleware.validateId(Usuario),
     userController.getCommentsByUser
 )
-router.post("/usuario/:id/comentarios",
+router.post("/usuarios/:id/comentarios",
     genericMiddleware.validateId(Usuario),
     userController.addCommentsByUser
 )
@@ -57,15 +57,15 @@ router.get("/usuario/:id/seguidores",
     userController.getFollowers
 )
 
-router.get("/usuario/:id/seguidos",
+router.get("/usuarios/:id/seguidos",
     genericMiddleware.validateId(Usuario),
     userController.getFollowing
 )
-router.post("/usuario/:id/seguidos",
+router.post("/usuarios/:id/seguidos",
     genericMiddleware.validateId(Usuario),
     userController.followUser
 )
-router.delete("/usuario/:id/seguidos",
+router.delete("/usuarios/:id/seguidos",
     genericMiddleware.validateId(Usuario),
     userController.unfollowUser
 )

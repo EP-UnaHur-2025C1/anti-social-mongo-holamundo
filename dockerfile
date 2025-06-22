@@ -1,11 +1,9 @@
-FROM node:20.10.0-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
 COPY package.json .
-RUN npm install
-COPY . .
+RUN npm install -omit=dev
+COPY src .
 
-EXPOSE 3000
-
-CMD [ "node", "./src/app.js"]
+CMD [ "node", "app.js"]

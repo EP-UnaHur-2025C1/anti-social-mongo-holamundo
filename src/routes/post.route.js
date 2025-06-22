@@ -1,9 +1,7 @@
 const {Router} = require('express');
 const Post = require('../Schemas/postSchema');
 const schemaValidator = require('../Schemas/schemaValidator');
-
 const genericMiddleware = require('../middleware/generic.middleware');
-
 const postController = require('../controllers/post.controller');
 const router = Router();
 

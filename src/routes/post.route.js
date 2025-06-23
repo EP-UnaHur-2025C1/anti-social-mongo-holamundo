@@ -7,27 +7,27 @@ const router = Router();
 
 router.get("/posts", // Obtiene todos los Post
     postController.getAllPost
-)
+)//
 
 router.post("/post",//Crea un nuevo Post
     schemaValidator(Post),
     postController.createPost
-)
+)//
 
 router.put("/post/:id",//Actualiza un Post por el ID
     genericMiddleware.validateId(Post),
     postController.updatePost
-)
+)//
 
 router.get("/post/:id",//Obtiene y devuelve un Post específico por el ID
     genericMiddleware.validateId(Post),
     postController.getPostById
-)
+)//
 
 router.delete("/post/:id",//Elimina el Post por el ID
     genericMiddleware.validateId(Post),
     postController.deletePost
-)
+)//
 
 router.get("/post/:id/usuario",// Obtiene los usuarios asociados al Post
     genericMiddleware.validateId(Post),

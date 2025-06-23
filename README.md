@@ -51,33 +51,44 @@ git clone https://github.com/tu-usuario/anti-social-net.git
 cd anti-social-net
 ```
 
-### 📦 Instalá dependencias
-
-```bash
-npm install
-```
-
----
-
 ## 🐳 Uso con Docker
 
-### 🧱 Construir y levantar contenedores
+### 📦 Requisitos previos
 
-```bash
-npm run docker:build
-npm run docker:up
-```
+Asegurate de tener instalado:
+
+    Docker
+
+    Docker Compose
+
+🚀 Levantar los contenedores
+
+docker compose up --build -d
+
+Esto levantará los siguientes servicios:
+
+    apiimage1: el backend en Express (puerto 4500)
+
+    database: base de datos MongoDB (puerto 27017)
+
+    redis: servidor Redis para caching (puerto 6379)
+
+    mongo-express: interfaz visual para MongoDB (puerto 8082)
+
+🛑 Apagar los contenedores
+
+docker compose down
+
+    Usá --remove-orphans si aparecen contenedores huérfanos tras cambios en los servicios.
+
+📄 Ver logs de un servicio
+
+docker compose logs -f apiimage1
 
 ### 🚀 Ejecutar en desarrollo
 
 ```bash
 npm run dev
-```
-
-### 🛑 Apagar contenedores
-
-```bash
-npm run docker:down
 ```
 
 ---

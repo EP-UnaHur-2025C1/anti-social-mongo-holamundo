@@ -4,7 +4,10 @@ const controller = {}
 const mongoose = require("../db/mongo.db").mongoose;
 
 const getAllPost = async (req,res) => {
-    const posts = await Post.find({});
+    const posts = await Post.find({}).populate("tags", "nombre") // Esto es para obtener los nombres de tags de cada post
+    //obtener los nombres de tags de cada post
+    // const posts = await Post.find({}).populate("tags")
+    // const posts = await Post.find({}).populate({"path": "tags", "model": "Tag"})
     res.status(200).json(posts)
 }
 

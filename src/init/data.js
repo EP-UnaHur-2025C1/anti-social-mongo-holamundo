@@ -12,7 +12,7 @@ const initData = async() => {
         await Post.deleteMany({});
         console.log('Colección de posts limpiada');
         await Tag.deleteMany({});
-        console.log('Colección deTags limpiada');
+        console.log('Colección de Tags limpiada');
        
         
     
@@ -103,6 +103,7 @@ const initData = async() => {
             });
         }
         console.log('Relaciones establecidas correctamente');
+        
         const tags = await Tag.insertMany([
             {
             nombre: "#viaje",
@@ -117,17 +118,38 @@ const initData = async() => {
             postId: [posts[0]._id, posts[1]._id], // Relación con los posts 1 y 2
             },
         ]);
+        //relacion entre tags y posts
         console.log('Tags creados correctamente');
+        for (const tag of tags) {
+            await Post.updateMany(
+            { _id: { $in: tag.postId } },
+            { $push: { tags: tag._id } }
+            );
+        }
+        //relacion entre posts y tags
+        console.log('Relación entre posts y tags establecida correctamente');
+        for (const tag of tags) {
+            await Tag.updateMany(
+            { _id: tag._id },
+            { $push: { postId: { $each: tag.postId } } }
+            );
+        }
+        //relacion entre tags y posts
+        console.log('Relación entre tags y posts establecida correctamente');   
         await usuarios[0].updateOne({ $push: { seguidores: usuarios[1]._id } });
         await usuarios[1].updateOne({ $push: { seguidores: usuarios[2]._id } });
         await usuarios[2].updateOne({ $push: { seguidores: usuarios[0]._id } });
         await usuarios[1].updateOne({ $push: { seguidos: usuarios[0]._id } });
         await usuarios[2].updateOne({ $push: { seguidos: usuarios[1]._id } });
         await usuarios[0].updateOne({ $push: { seguidos: usuarios[2]._id } });
+        
         console.log('Relaciones de seguidores y seguidos establecidas correctamente');
-    } catch(err){
+    
+        } catch(err){
         console.error('Error al inicializar los datos', err.message);
+        
     }
+        
 }
 
 module.exports = initData; 

@@ -403,7 +403,24 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
-
+  /post/{id}/usuario:
+    get:
+      summary: Obtener los usuario asociados al Post
+      tags:
+        - Post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario asociado al post
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
   /comments:
     get:
       summary: Obtener todos los comentarios
@@ -548,6 +565,24 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
   /imagenes:
+    get:
+      summary: Obtener todos los archivos
+      tags:
+        - Image
+      responses:
+        '200':
+          description: Listado de archivos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+        '204':
+          description: No hay archivos
+        500:
+          $ref: '#/components/responses/ServerError'
+  /imagenes/post/{id}:
     get:
       summary: Obtener todos los archivos
       tags:

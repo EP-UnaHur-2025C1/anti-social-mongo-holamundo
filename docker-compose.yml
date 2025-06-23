@@ -19,7 +19,7 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: admin1234
-      ME_CONFIG_MONGODB_URL: mongodb://admin:admin1234@mongodb:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin1234@database:27017/
       ME_CONFIG_BASICAUTH: "false"
 
   apiimage1:
@@ -29,6 +29,6 @@ services:
       - 4500:3006
     environment:
       PORT: 3006
-      MONGO_URL: mongodb://admin:admin1234@mongodb:27017/producto?authSource=admin
+      MONGO_URL: mongodb://admin:admin1234@database:27017/producto?authSource=admin
     depends_on:
       - database

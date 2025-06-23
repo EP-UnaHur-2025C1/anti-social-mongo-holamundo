@@ -117,7 +117,7 @@ npm run docker:down
 ## 📑 Swagger - Documentación de API
 
 Disponible en:  
-🌐 [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+🌐 [http://localhost:4500/api-docs](http://localhost:4500/api-docs)
 
 Documentado con `docker.compose.yaml`, incluyendo rutas, esquemas y ejemplos.
 

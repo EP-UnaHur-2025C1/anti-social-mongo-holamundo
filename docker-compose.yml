@@ -38,6 +38,8 @@ services:
     environment:
       PORT: 3006
       MONGO_URL: mongodb://admin:admin1234@database:27017/producto?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - database
       - redis

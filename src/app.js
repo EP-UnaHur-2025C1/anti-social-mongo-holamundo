@@ -2,6 +2,7 @@ const express = require('express');
 const routes = require('./routes/index.routes');
 const { mongoose, connectToDatabase } = require('./db/mongo.db');
 const initData = require('./init/data')
+const redisClient = require('./config/redisClient');
 
 
 const PORT = process.env.PORT || 3000 
@@ -9,6 +10,11 @@ const app = express()
 //Swagger
 const swaggerInit = require("./swagger/swaggerInit.js")
 swaggerInit(app)
+
+//redis
+redisClient.connect()
+    .then(() => console.log('Conectado a Redis'))
+    .catch(console.error)
 
 app.use(express.json())
 

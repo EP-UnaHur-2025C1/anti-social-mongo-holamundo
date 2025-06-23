@@ -7,5 +7,7 @@ const Image = require('../Schemas/imageSchema')
 router.get('/imagenes', imageController.getAllImages);
 router.get('/imagenes/post/:id', imageController.getImagesByPost);
 router.post('/imagenes', imageController.createImage);
+router.put('/imagenes/:id', imageController.updateImage);
+router.delete('/imagenes/:id', imageController.deleteImage) 
 
 module.exports = router;

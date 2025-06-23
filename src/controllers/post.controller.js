@@ -1,60 +1,94 @@
-const Post = require("../Schemas/postSchema")
-const Usuario = require("../Schemas/userSchema")
-const controller = {}
+const Post = require("../Schemas/postSchema");
+const Usuario = require("../Schemas/userSchema");
+const controller = {};
 const mongoose = require("../db/mongo.db").mongoose;
+const redisClient = require("../config/redisClient");
 
-const getAllPost = async (req,res) => {
-    const posts = await Post.find({}).populate("tags", "nombre") // Esto es para obtener los nombres de tags de cada post
-    //obtener los nombres de tags de cada post
-    // const posts = await Post.find({}).populate("tags")
-    // const posts = await Post.find({}).populate({"path": "tags", "model": "Tag"})
-    res.status(200).json(posts)
-}
+const getAllPost = async (req, res) => {
+  const cachedPosts = await redisClient.get("posts");
+  if (cachedPosts) {
+    return res.status(200).json(JSON.parse(cachedPosts));
+  } else {
+    const posts = await Post.find().populate(
+      "userId",
+      "nickname email pathImgPerfil"
+    );
+    await redisClient.set("posts", JSON.stringify(posts), {
+      EX: 3600, // Expira en 1 hora
+      NX: true, // Solo establece si no existe
+    });
+    return res.status(200).json(posts);
+  }
+};
 
-controller.getAllPost = getAllPost
+controller.getAllPost = getAllPost;
 
-const getPostById = async (req,res) =>{
-    const {id} = req.params
-    const post = await Post.findById(id)
-    res.status(200).json(post)
-}
+const getPostById = async (req, res) => {
+  const { id } = req.params;
+  const cachedPost = await redisClient.get(`post:${id}`);
+  if (cachedPost) {
+    return res.status(200).json(JSON.parse(cachedPost));
+  } else {
+    const post = await Post.findById(id);
+    await redisClient.set(`post:${id}`, JSON.stringify(post), {
+      EX: 3600, // Expira en 1 hora
+      NX: true, // Solo establece si no existe
+    });
+    res.status(200).json(post);
+  }
+};
 
-controller.getPostById = getPostById
+controller.getPostById = getPostById;
 
-const createPost = async (req,res) => {
-    const post = await Post.create(req.body)
-    res.status(201).json(post)
-}
+const createPost = async (req, res) => {
+  const post = await Post.create(req.body);
+  await redisClient.del("posts"); // Limpiar la caché de posts en Redis
+  res.status(201).json(post);
+};
 
-controller.createPost = createPost
+controller.createPost = createPost;
 
-const updatePost = async (req,res) =>{
-    const {id} = req.params
-    const post = await Post.findByIdAndUpdate(id, req.body, {new: true})
-    res.status(200).json(post)
-}
+const updatePost = async (req, res) => {
+  const { id } = req.params;
+  const post = await Post.findByIdAndUpdate(id, req.body, { new: true });
+  res.status(200).json(post);
+  await redisClient.del(`post:${id}`); // Limpiar la caché del post actualizado
+  await redisClient.del("posts"); // Limpiar la caché de posts en Redis
+  if (!post) {
+    return res.status(404).json({ message: "Post no encontrado" });
+  }
+};
+controller.updatePost = updatePost;
 
-controller.updatePost = updatePost
+const deletePost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await Post.findByIdAndDelete(id);
+    res.status(200).json({ message: "Post eliminado con éxito" });
+    await redisClient.del(`post:${id}`); // Limpiar la caché del post eliminado
+    await redisClient.del("posts"); // Limpiar la caché de posts en Redis
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error al eliminar el post", details: error.message });
+  }
+};
 
-const deletePost = async (req,res) =>{
-    const {id} = req.params
-    try{
-        const post = await Post.findByIdAndDelete(id)
-        res.status(200).json({message: "Post eliminado con éxito"})
-    } catch (error){
-        res.status(500).json({ error: "Error al eliminar el post", details: error.message })
-    }
-    
-}
+controller.deletePost = deletePost;
 
-controller.deletePost = deletePost
-
-const getCommentsByPost= async (req,res) => {
-  const _id = new mongoose.Types.ObjectId(req.params.id)
-  try{
+const getCommentsByPost = async (req, res) => {
+  const _id = new mongoose.Types.ObjectId(req.params.id);
+  const cachedComments = await redisClient.get(`comments:${_id}`);
+  if (cachedComments) {
+    return res.status(200).json(JSON.parse(cachedComments));
+  }
+  if (!_id) {
+    return res.status(400).json({ message: "ID de post inválido" });
+  }
+  try {
     const post = await Post.aggregate([
       {
-        $match: {_id}
+        $match: { _id },
       },
       {
         $project: {
@@ -65,55 +99,65 @@ const getCommentsByPost= async (req,res) => {
             $filter: {
               input: "$comentarios",
               as: "comentario",
-              cond: { $eq: ["$$comentario.visible", true] } // Filtrar solo los comentarios visibles
-            }
+              cond: { $eq: ["$$comentario.visible", true] }, // Filtrar solo los comentarios visibles
+            },
           },
         },
       },
-    ])
-
-    res.status(200).json(post)
-
-  }catch (err){
-    res.status(500).json({ message: "Error al obtener comentarios", error: err });
+    ]);
+    res.status(200).json(post);
+    await redisClient.set(`comments:${_id}`, JSON.stringify(post), {
+      EX: 3600, // Expira en 1 hora
+      NX: true, // Solo establece si no existe
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener comentarios", error: err });
   }
-}
+};
 
-controller.getCommentsByPost = getCommentsByPost
+controller.getCommentsByPost = getCommentsByPost;
 
-const addComments = async (req,res) =>{
-  const {id} = req.params
+const addComments = async (req, res) => {
+  const { id } = req.params;
+  await redisClient.del(`comments:${id}`); // Limpiar la caché de comentarios del post
   try {
     const post = await Post.findByIdAndUpdate(
       id,
-      {$push : {comentarios: req.body}},
-      {new: true}
+      { $push: { comentarios: req.body } },
+      { new: true }
     );
 
-    
     res.status(201).json(post.comentarios[post.comentarios.length - 1]);
   } catch (err) {
-    res.status(400).json({ message: "Error al asociar comentarios al producto", error: err });
+    res.status(400).json({
+      message: "Error al asociar comentarios al producto",
+      error: err,
+    });
   }
+};
 
-}
+controller.addComments = addComments;
 
-controller.addComments = addComments
-
-const getUsersByPost = async (req,res) => {
-  const _id = new mongoose.Types.ObjectId(req.params.id)
-  try{
+const getUsersByPost = async (req, res) => {
+  const _id = new mongoose.Types.ObjectId(req.params.id);
+  const cachedUsers = await redisClient.get(`usersByPost:${_id}`);
+  if (cachedUsers) {
+    return res.status(200).json(JSON.parse(cachedUsers));
+  }
+  try {
     const post = await Post.aggregate([
       {
-        $match: {_id}
+        $match: { _id },
       },
       {
         $lookup: {
-          from: 'usuarios',
+          from: "usuarios",
           localField: "_id",
           foreignField: "postId",
-          as: "usuarios"
-        }
+          as: "usuarios",
+        },
       },
       {
         $project: {
@@ -122,21 +166,26 @@ const getUsersByPost = async (req,res) => {
           fecha: 1,
           "usuarios._id": 1,
           "usuarios.nickname": 1,
-          "usuarios.email":1,
+          "usuarios.email": 1,
           "usuarios.password": 1,
         },
       },
-    ])
-    res.status(200).json(post)
-
-  }catch (err){
-    res.status(500).json({ message: "Error al obtener fabricantes", error: err });
+    ]);
+    await redisClient.set(`usersByPost:${_id}`, JSON.stringify(post), {
+      EX: 3600, // Expira en 1 hora
+      NX: true, // Solo establece si no existe
+    });
+    res.status(200).json(post);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener fabricantes", error: err });
   }
-}
+};
 
-controller.getUsersByPost = getUsersByPost
+controller.getUsersByPost = getUsersByPost;
 
-const addUsersByPost = async (req,res) => {
+const addUsersByPost = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
 
@@ -160,13 +209,13 @@ const addUsersByPost = async (req,res) => {
       { $addToSet: { postId: id } }, // Agregar el id del post al array postId del usuario
       { new: true }
     );
-
+    await redisClient.del(`usersByPost:${id}`); // Limpiar la caché de usuarios por post
     res.status(201).json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-controller.addUsersByPost = addUsersByPost
+controller.addUsersByPost = addUsersByPost;
 
-module.exports = controller
+module.exports = controller;

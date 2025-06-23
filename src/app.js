@@ -1,7 +1,8 @@
 const express = require('express');
 const routes = require('./routes/index.routes');
 const { mongoose, connectWithRetry } = require('./db/mongo.db');
-const initData = require('./init/data');
+const initData = require('./init/data')
+const redisClient = require('./config/redisClient');
 
 const PORT = process.env.PORT || 3006;
 const app = express();
@@ -10,7 +11,12 @@ const app = express();
 const swaggerInit = require("./swagger/swaggerInit.js");
 swaggerInit(app);
 
-app.use(express.json());
+//redis
+redisClient.connect()
+    .then(() => console.log('Conectado a Redis'))
+    .catch(console.error)
+
+app.use(express.json())
 
 app.use(routes.userRoute);
 app.use(routes.postRoute);

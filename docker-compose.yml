@@ -21,6 +21,14 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: admin1234
       ME_CONFIG_MONGODB_URL: mongodb://admin:admin1234@database:27017/
       ME_CONFIG_BASICAUTH: "false"
+  
+  redis:
+    image: redis
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
 
   apiimage1:
     build: .
@@ -32,3 +40,4 @@ services:
       MONGO_URL: mongodb://admin:admin1234@database:27017/producto?authSource=admin
     depends_on:
       - database
+      - redis

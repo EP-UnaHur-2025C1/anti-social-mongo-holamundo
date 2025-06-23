@@ -52,22 +52,27 @@ router.post("/usuarios/:id/comentarios",
     genericMiddleware.validateId(Usuario),
     userController.addCommentsByUser
 )
+
+router.post("/usuarios/:id/seguidos",
+    genericMiddleware.validateId(Usuario),
+    userController.followUser
+)
+
+router.delete("/usuarios/:id/seguidos",////////////////////seguidoss
+    genericMiddleware.validateId(Usuario),
+    userController.unfollowUser
+)
+
 router.get("/usuario/:id/seguidores",
     genericMiddleware.validateId(Usuario),
     userController.getFollowers
 )
 
-router.get("/usuarios/:id/seguidos",
+router.get("/usuarios/:id/seguidos", //////////////////////////seguidosa
     genericMiddleware.validateId(Usuario),
     userController.getFollowing
 )
-router.post("/usuarios/:id/seguidos",
-    genericMiddleware.validateId(Usuario),
-    userController.followUser
-)
-router.delete("/usuarios/:id/seguidos",
-    genericMiddleware.validateId(Usuario),
-    userController.unfollowUser
-)
+
+
 
 module.exports = router

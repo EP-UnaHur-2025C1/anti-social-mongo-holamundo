@@ -3,9 +3,13 @@ const routes = require('./routes/index.routes');
 const { mongoose, connectToDatabase } = require('./db/mongo.db');
 const initData = require('./init/data')
 
-const PORT = process.env.PORT || 3000 
 
+const PORT = process.env.PORT || 3000 
 const app = express()
+//Swagger
+const swaggerInit = require("./swagger/swaggerInit.js")
+swaggerInit(app)
+
 app.use(express.json())
 
 app.use(routes.userRoute)

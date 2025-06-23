@@ -4,7 +4,7 @@ info:
   version: "1.0.0"
   description: Documentación de la API para la red social
 servers:
-  - url: http://localhost:3001
+  - url: http://localhost:3000
 components:
   responses:
     
@@ -20,7 +20,7 @@ components:
       ServerError:
         description: Error en servidor
   schemas:
-    User:
+    Usuarios:
       type: object
       properties:
         nickName:
@@ -40,14 +40,24 @@ components:
           example: Este es un nuevo post
     Comment:
       type: object
+      required:
+        - nickName
+        - postId
+        - descripcion
+        - comentario
       properties:
+        nickName:
+          type: string
+          example: "1"
+        postId:
+          type: integer
+          example: 1
+        descripcion:
+          type: string
+          example: "buen meme."
         comentario:
           type: string
-          example: Este es un comentario.
-        fecha:
-          type: string
-          format: date-time
-          example: '2023-10-01T12:00:00Z'
+          example: "Que buen meme subistes!"
     Tag:
       type: object
       properties:
@@ -70,12 +80,15 @@ components:
           type: string
           example: "/uploads/imagenes-1620123456789.jpg"
           description: Ruta de la imagen almacenada
+        postId:
+          type: integer
+          example: 1
 paths:
-  /users:
+  /usuarios:
     get:
       summary: Obtener todos los usuarios
       tags:
-        - Users
+        - Usuarios
       responses:
         200:
           description: Lista de usuarios
@@ -88,21 +101,45 @@ paths:
     post:
       summary: Crear un nuevo usuario
       tags:
-        - Users
+        - Usuarios
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Usuarios'
       responses:
         '201':
           description: Usuario creado exitosamente
-  /users/{id}:
+  /usuarios/{id}:
+    get:
+      summary: Obtener un usuario por ID
+      tags:          
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuarios' 
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'  
+
+          
     put:
       summary: Actualizar un usuario por ID
       tags:
-        - Users
+        - Usuarios
       parameters:
         - name: id
           in: path
@@ -114,7 +151,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/Usuarios'
       responses:
         '201':
           description: Usuario actualizado exitosamente
@@ -127,7 +164,7 @@ paths:
     delete:
       summary: Eliminar un usuario por ID
       tags:
-        - Users
+        - Usuarios
       parameters:
         - name: id
           in: path
@@ -139,11 +176,119 @@ paths:
           description: Usuario eliminado exitosamente
         404:
           $ref: '#/components/responses/NotFound'
+  /usuarios/{id}/seguidos:
+    post: 
+      summary: Seguir a un usuario
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          descripcion: ID del usuario a seguir
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seguidorId:
+                  type: integer
+                  example: 1
+                  description: ID del usuario que sigue
+      responses:
+        '201':
+          description: Ahora seguis a este usuario
+        '409':
+          description: Ya seguis a este usuario
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /usuarios/{id}/seguidoss: 
+    delete:
+      summary: Dejar de seguir a un usuario
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario a dejar de seguir
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seguidorId:
+                  type: integer
+                  example: 1
+      responses:
+        '204':
+          description: Ahora no seguis a este usuario
+        404:
+          description: "No estas siguiendo a este usuario"
+        500:
+          $ref: '#/components/responses/ServerError'
+  /usuarios/{id}/seguidores:
+    get:
+      summary: Obtener una lista de seguidores
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de seguidores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuarios'
+        500:
+          $ref: '#/components/responses/ServerError'
+  /usuarios/{id}/seguidosa:
+    get:
+      summary: Obtener una lista de usuarios seguidos
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de usuarios seguidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuarios'
+        500:
+          $ref: '#/components/responses/ServerError'
   /posts:
     get:
       summary: Obtener todas las publicaciones
       tags:
-        - Posts
+        - Post
       responses:
         '200':
           description: Lista de publicaciones
@@ -153,11 +298,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
-
+  /post: 
     post:
       summary: Crear nuevo post
       tags:
-        - Posts
+        - Post
       requestBody:
         required: true
         content:
@@ -196,11 +341,11 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /posts/{id}:
+  /post/{id}:
     get:
       summary: Obtener una publicación por ID
       tags:
-        - Posts
+        - Post
       parameters:
         - name: id
           in: path
@@ -218,7 +363,7 @@ paths:
     put:
       summary: Actualizar una publicación por ID
       tags:
-        - Posts
+        - Post
       parameters:
         - name: id
           in: path
@@ -245,7 +390,7 @@ paths:
       summary: Eliminar una publicación por ID
       description: Elimina una publicación y todos sus recursos asociados 
       tags:
-        - Posts
+        - Post
       parameters:
         - name: id
           in: path
@@ -263,66 +408,6 @@ paths:
                   message:
                     type: string
                     example: "Publicación eliminada exitosamente junto con todos sus recursos asociados"
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-  /posts/{id}/images/{urlImg}:
-    delete:
-      summary: Eliminar una imagen específica de un post
-      tags:
-        - Posts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: ID del post
-        - name: urlImg
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID de la imagen a eliminar
-      responses:
-        '200':
-          description: Imagen eliminada exitosamente
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-
-    put:
-      summary: Actualizar una publicación con imágenes
-      tags:
-        - Posts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                content:
-                  type: string
-                  example: Contenido actualizado del post
-                imagenes:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-                  description: Nuevas imágenes para agregar al post
-      responses:
-        '200':
-          description: Publicación actualizada exitosamente
         404:
           $ref: '#/components/responses/NotFound'
         500:
@@ -402,7 +487,7 @@ paths:
     get:
       summary: Obtener todas las etiquetas
       tags:
-        - Tags
+        - Tag
       responses:
         '200':
           description: Lista de etiquetas
@@ -412,10 +497,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+  /tag:
     post:
       summary: Crear una nueva etiqueta
       tags:
-        - Tags
+        - Tag
       requestBody:
         required: true
         content:
@@ -425,11 +511,11 @@ paths:
       responses:
         '201':
           description: Etiqueta creada exitosamente
-  /tags/{id}:
+  /tag/{id}:
     put:
       summary: Actualizar una etiqueta por ID
       tags:
-        - Tags
+        - Tag
       parameters:
         - name: id
           in: path
@@ -455,7 +541,7 @@ paths:
     delete:
       summary: Eliminar una etiqueta por ID
       tags:
-        - Tags
+        - Tag
       parameters:
         - name: id
           in: path
@@ -535,7 +621,7 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
@@ -543,6 +629,9 @@ paths:
                   type: string
                   example: "/uploads/imagenes-1620123456789.jpg"
                   description: Ruta de la imagen almacenada
+                postId: 
+                  type: integer
+                  example: 1
       responses:
         '201':
           description: Archivos creados exitosamente
@@ -560,7 +649,7 @@ paths:
           description: Tipo de archivo no permitido 
         500:
           $ref: '#/components/responses/ServerError'
-  /Images/{urlImg}:
+  /images/{urlImg}:
     put:
       summary: Actualizar un archivo existente
       tags:
@@ -579,12 +668,13 @@ paths:
             schema:
               type: object
               properties:
-                imagenes:
-                  type: array
-                  items:
-                    type: string
-              required:
-                - imagenes
+                urlImg:
+                  type: string
+                  example: "/uploads/imagenes-1620123456789.jpg"
+                  description: Ruta de la imagen almacenada
+                postId: 
+                  type: integer
+                  example: 1
       responses:
         '200':
           description: Archivo actualizado exitosamente

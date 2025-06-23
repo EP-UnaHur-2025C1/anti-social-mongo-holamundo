@@ -5,16 +5,11 @@ const genericMiddleware = require('../middleware/generic.middleware');
 const postController = require('../controllers/post.controller');
 const router = Router();
 
-router.get("/posts",
+router.get("/posts", //Bien Post
     postController.getAllPost
 )
 
-router.get("/post/:id",
-    genericMiddleware.validateId(Post),
-    postController.getPostById
-)
-
-router.post("/post",
+router.post("/post",/// Bien Post
     schemaValidator(Post),
     postController.createPost
 )
@@ -24,19 +19,14 @@ router.put("/post/:id",
     postController.updatePost
 )
 
-router.delete("/post/:id",
+router.get("/post/:id",/// Bien Post
+    genericMiddleware.validateId(Post),
+    postController.getPostById
+)
+
+router.delete("/post/:id",/// Bien Post
     genericMiddleware.validateId(Post),
     postController.deletePost
-)
-
-router.get("/post/:id/comentarios",
-    genericMiddleware.validateId(Post),
-    postController.getCommentsByPost
-)
-
-router.post("/post/:id/comentarios",
-    genericMiddleware.validateId(Post),
-    postController.addComments
 )
 
 router.get("/post/:id/usuario",
@@ -48,5 +38,19 @@ router.post("/post/:id/usuario",
     genericMiddleware.validateId(Post),
     postController.addUsersByPost
 )
+
+
+
+router.get("/post/:id/comentarios",
+    genericMiddleware.validateId(Post),
+    postController.getCommentsByPost
+)
+
+router.post("/post/:id/comentarios",
+    genericMiddleware.validateId(Post),
+    postController.addComments
+)
+
+
 
 module.exports = router

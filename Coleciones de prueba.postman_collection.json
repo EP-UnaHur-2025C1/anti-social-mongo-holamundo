@@ -1,0 +1,472 @@
+{
+	"info": {
+		"_postman_id": "7e45cdba-f0dd-446a-ba43-56d74e82beff",
+		"name": "Coleciones de prueba",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44124900",
+		"_collection_link": "https://ezequielescobar-4338190.postman.co/workspace/Ezequiel-Escobar's-Workspace~0bc949bd-6358-41f0-8d2d-c825403707c3/collection/44124900-7e45cdba-f0dd-446a-ba43-56d74e82beff?action=share&source=collection_link&creator=44124900"
+	},
+	"item": [
+		{
+			"name": "/usuarios/68585907148d02edb5f1ef68/posts GET USER POST ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nickname\": \"usuario con S\",\r\n  \"email\": \"usuariocosssssssssssss@usuario.com\",\r\n  \"password\": \"ssssssssssssssss\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/usuarios/68598b583804cb2d9f8b0089/comentarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"usuarios",
+						"68598b583804cb2d9f8b0089",
+						"comentarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/usuarios",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nickname\": \"Nueva Persona\",\r\n  \"email\": \"usuariocosssssssssssss@usuario.com\",\r\n  \"password\": \"nuevaPersona1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/usuarios/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"urlImg\": \"https://cdn.ejemplo.com/imagen-grande-y-valida.jpg\",\r\n  \"postId\": 1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/usuarios/68598b583804cb2d9f8b008a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"usuarios",
+						"68598b583804cb2d9f8b008a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/usuarios/68585f06398720f4c64d5899",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4500/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/usuarios ESCUCHANDO DESDE EL PUERTO 4500",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4500/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/imagenes",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"urlImg\": \"https://otroejemplodeimagen.com/imagen.jpg\",\r\n  \"postId\": \"6858d095cb35f6f4490dcce2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4500/imagenes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"imagenes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/imagenes",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4500/imagenes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"imagenes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/imagenes/6858d0c1cb35f6f4490dccfd TEST PUT IMAGE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"urlImg\": \"https://nueva/imagen-nueva.jpg\",\r\n  \"postId\": \"6858d108cb35f6f4490dcd01\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4500/imagenes/6858d0c1cb35f6f4490dccfd",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"imagenes",
+						"6858d0c1cb35f6f4490dccfd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/imagenes/6858d0c1cb35f6f4490dccfd DELETE IMAGE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4500/imagenes/6858d0c1cb35f6f4490dccfd",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"imagenes",
+						"6858d0c1cb35f6f4490dccfd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": " \"urlImg\": \"https://pruebaIMAGEenIMAGE/imagen.jpg\", agregado desde la IMAGEN de mongo",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3006/imagenes/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"imagenes",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/usuarios/68598b583804cb2d9f8b008a GET ID POR USUARIO",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3006/usuarios/68598b583804cb2d9f8b008a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"usuarios",
+						"68598b583804cb2d9f8b008a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/usuarios/68598b583804cb2d9f8b008a USER ID PUT",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nickname\": \"Nueva Persona con PUT\",\r\n  \"email\": \"putttttttttttt@usuario.com\",\r\n  \"password\": \"puttttttttttttttt\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/usuarios/68598b583804cb2d9f8b008a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"usuarios",
+						"68598b583804cb2d9f8b008a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/usuarios/68598b583804cb2d9f8b008a USER ID DELETE",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nickname\": \"Nueva Persona con PUT\",\r\n  \"email\": \"putttttttttttt@usuario.com\",\r\n  \"password\": \"puttttttttttttttt\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3006/usuarios/68598b583804cb2d9f8b008a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"usuarios",
+						"68598b583804cb2d9f8b008a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/usuarios/68598b583804cb2d9f8b0089/comentarios GET USER ID COMENTARIO",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3006/usuarios/68598b583804cb2d9f8b0089/comentarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"usuarios",
+						"68598b583804cb2d9f8b0089",
+						"comentarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/tags/ TAGS ALL",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3006/tags/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"tags",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/tags/ POST TAG",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n    \"nombre\": \"aventura\",\r\n    \"postId\": [\r\n    \"665c6d3e4f2f0a001ea3a9d2\",\r\n    \"665c6d4a4f2f0a001ea3a9d3\"\r\n  ]\r\n }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/tags/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"tags",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3006/tags/6859b55df7866a1da9e0d6a8 PUT TAG",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n    \"nombre\": \"#otroCAMBIADO\",\r\n    \"postId\": [\r\n    \"665c6d3e4f2f0a001ea3a9d2\",\r\n    \"665c6d4a4f2f0a001ea3a9d3\"\r\n  ]\r\n }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/tags/6859b55df7866a1da9e0d6a8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"tags",
+						"6859b55df7866a1da9e0d6a8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

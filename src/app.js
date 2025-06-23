@@ -4,7 +4,7 @@ const { mongoose, connectToDatabase } = require('./db/mongo.db');
 const initData = require('./init/data')
 
 
-const PORT = process.env.PORT || 3000 
+const PORT = process.env.PORT || 3006
 const app = express()
 //Swagger
 const swaggerInit = require("./swagger/swaggerInit.js")

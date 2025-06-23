@@ -1,5 +1,5 @@
 services:
-  mongodb:
+  database:
     image: mongo:latest
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -8,9 +8,12 @@ services:
       - 27017:27017
     volumes:
       - ./mongo_data:/data/db
+      - ./.env:/app/.env
       
   mongo-express:
     image: mongo-express
+    depends_on:
+      - database
     ports:
       - 8082:8081
     environment:
@@ -27,3 +30,5 @@ services:
     environment:
       PORT: 3006
       MONGO_URL: mongodb://admin:admin1234@mongodb:27017/producto?authSource=admin
+    depends_on:
+      - database

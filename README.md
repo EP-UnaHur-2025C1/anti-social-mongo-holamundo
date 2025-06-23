@@ -37,7 +37,7 @@ anti-social-mongo-holamundo/
 ├── .docker-compose.yml
 ├──dockerfile
 ├── package-lock.json
-├── package.json
+└──  package.json
 ```
 
 ---

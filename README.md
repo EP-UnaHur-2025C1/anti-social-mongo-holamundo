@@ -31,7 +31,7 @@ anti-social-mongo-holamundo/
 ├──     ├── swagger/
 ├──     ├── models/
 ├──     ├── app.js
-├──     ├── main.js
+├──     └── main.js
 ├── dockerignore
 ├── .env
 ├── .docker-compose.yml
@@ -148,6 +148,7 @@ Incluye colección de pruebas para:
 - Juanma Britez
 - Vanina Cejas
 - Ezequiel Escobar
+- Franco Rueta
 
 ---
 

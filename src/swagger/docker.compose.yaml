@@ -23,7 +23,7 @@ components:
     Usuarios:
       type: object
       properties:
-        nickName:
+        nickname:
           type: string
           example: usuario123
         email:

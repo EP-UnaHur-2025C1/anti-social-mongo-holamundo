@@ -1,6 +1,6 @@
 const express = require('express');
 const routes = require('./routes/index.routes');
-const { mongoose, connectWithRetry } = require('./db/mongo.db');
+const { mongoose, connectToDatabase } = require('./db/mongo.db');
 const initData = require('./init/data')
 const redisClient = require('./config/redisClient');
 
@@ -24,7 +24,7 @@ app.use(routes.tagRoute);
 app.use(routes.imageRoute);
 
 app.listen(PORT, async () => {
-  await connectWithRetry();
+  await connectToDatabase();
   await initData();
   console.log(`🚀 Aplicación iniciada en el puerto ${PORT} - http://localhost:${PORT}/usuarios`);
 });

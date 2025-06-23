@@ -1,86 +1,153 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/NImNxoFn)
-# UnaHur - Red Anti-Social
 
-Se solicita el modelado y desarrollo de un sistema backend para una red social llamada **“UnaHur Anti-Social Net”**, inspirada en plataformas populares que permiten a los usuarios realizar publicaciones y recibir comentarios sobre las mismas.
+# 🧠 UnaHur Anti-Social Net - Backend
 
-![Imagen](./assets/ANTI-SOCIALNET.jpeg)
+Backend desarrollado en Node.js + MongoDB para una red social educativa que permite publicaciones, comentarios, etiquetas, seguidores y más.
 
-# Contexto del Proyecto
+---
 
-En una primera reunión con los sponsors del proyecto, se definieron los siguientes requerimientos para el desarrollo de un **MVP (Producto Mínimo Viable)**:
+## 🚀 Tecnologías Usadas
 
-- El sistema debe permitir que un usuario registrado realice una publicación (post), incluyendo **obligatoriamente una descripción**. De forma opcional, se podrán asociar **una o más imágenes** a dicha publicación.
+- Node.js + Express
+- MongoDB + Mongoose
+- Redis (caching)
+- Swagger (documentación)
+- Docker + Docker Compose
+- Joi (validaciones)
+- Nodemon (desarrollo)
 
-- Las publicaciones pueden recibir **comentarios** por parte de otros usuarios.
+---
 
-- Las publicaciones pueden estar asociadas a **etiquetas (tags)**. Una misma etiqueta puede estar vinculada a múltiples publicaciones.
+## 📁 Estructura del Proyecto
 
-- Es importante que los **comentarios más antiguos que X meses** (valor configurable mediante variables de entorno, por ejemplo, 6 meses) **no se muestren** en la visualización de los posteos.
+```
+anti-social-mongo-holamundo/
+├──   src/
+├──     ├── controllers/
+├──     ├── db/
+├──     ├── init/
+├──     ├── middlewares/
+├──     ├── routes/
+├──     ├── schemas/
+├──     ├── swagger/
+├──     ├── models/
+├──     ├── app.js
+├──     ├── main.js
+├── dockerignore
+├── .env
+├── .docker-compose.yml
+├──dockerfile
+├── package-lock.json
+├── package.json
+```
 
-####
+---
 
-# Entidades y Reglas de Negocio
+## ⚙️ Instalación y Uso
 
-Los sponsors definieron los siguientes nombres y descripciones para las entidades:
+### 🔧 Cloná el proyecto
 
-- **User**: Representa a los usuarios registrados en el sistema. El campo `nickName` debe ser **único** y funcionará como identificador principal del usuario.
+```bash
+git clone https://github.com/tu-usuario/anti-social-net.git
+cd anti-social-net
+```
 
-- **Post**: Publicación realizada por un usuario en una fecha determinada que contiene el texto que desea publicar. Puede tener **cero o más imágenes** asociadas. Debe contemplarse la posibilidad de **agregar o eliminar imágenes** posteriormente.
+### 📦 Instalá dependencias
 
-- **Post_Images**: Entidad que registra las imágenes asociadas a los posts. Para el MVP, solo se requiere almacenar la **URL de la imagen alojada**.
+```bash
+npm install
+```
 
-- **Comment**: Comentario que un usuario puede realizar sobre una publicación. Incluye la fecha en la que fue realizado y una indicación de si está **visible o no**, dependiendo de la configuración (X meses).
+---
 
-- **Tag**: Etiqueta que puede ser asignada a un post. Una etiqueta puede estar asociada a **muchos posts**, y un post puede tener **múltiples etiquetas**.
+## 🐳 Uso con Docker
 
-# Requerimientos Técnicos
+### 🧱 Construir y levantar contenedores
 
-1. **Modelado de Datos**
+```bash
+npm run docker:build
+npm run docker:up
+```
 
-   - Diseñar el modelo documental que represtente todas las entidades definidas por los sponsor del proyecto. Queda a su criterio si usan relaciones embebidas o relaciones referenciadas a otros documentos.
+### 🚀 Ejecutar en desarrollo
 
-### Ejemplo referenciadas
+```bash
+npm run dev
+```
 
-![referenciadas](./assets/Referenciada.png)
+### 🛑 Apagar contenedores
 
-2. **Desarrollo del Backend**
+```bash
+npm run docker:down
+```
 
-   - Crear los **endpoints CRUD** necesarios para cada entidad.
+---
 
-   - Implementar las rutas necesarias para gestionar las relaciones entre entidades (por ejemplo: asociar imágenes a un post, etiquetas a una publicación, etc.).
+## 📌 Scripts útiles
 
-   - Desarrollar las validaciones necesarias para asegurar la integridad de los datos (schemas, validaciones de integridad referencial).
+| Script | Descripción |
+|--------|-------------|
+| `npm run dev` | Inicia con nodemon y Docker (modo desarrollo) |
+| `npm run start` | Ejecuta el proyecto en producción |
+| `npm run docker:up` / `docker:down` | Control de contenedores |
 
-   - Desarrollar las funciones controladoras con una única responsabiliad evitando realizar comprobaciones innecesarias en esta parte del código.
+---
 
-3. **Configuración y Portabilidad**
+## 🧪 Funcionalidades
 
-   - El sistema debe poder cambiar de **base de datos** de forma transparente, utilizando configuración e instalación de dependencias adecuadas.
+### 👤 Usuarios
+- Obtener, crear, eliminar
+- Seguir / dejar de seguir
+- Ver seguidores / seguidos
 
-   - El sistema debe permitir configurar el **puerto de ejecución y variables de entorno** fácilmente.
+### 📝 Post
+- Crear post con descripción e imagen (por URL)
+- Agregar y listar comentarios visibles
+- Obtener, crear, eliminar
 
-4. **Documentación**
+### 🏷️ Tag
+- Crear y listar etiquetas
+- Obtener, crear, eliminar
 
-   - Generar la documentación de la API utilizando **Swagger (formato YAML)**, incluyendo todos los endpoints definidos.
+### 🖼️ Image
+- Obtener, crear, eliminar
+- Actualizar y eliminar (por URL)
 
-5. **Colecciones de Prueba**
+---
 
-   - Entregar las colecciones necesarias para realizar pruebas (por ejemplo, colecciones de Postman o archivos JSON de ejemplo).
+## 📑 Swagger - Documentación de API
 
-###
+Disponible en:  
+🌐 [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
-# Recomendaciones y ayudas
+Documentado con `docker.compose.yaml`, incluyendo rutas, esquemas y ejemplos.
 
-Les entregamos este link que apunta a un front-end ya desarrollado para que puedan investigarlo y puedan crear el back-end que se ajuste lo maximo posiblel funcionamiento del front.
+---
 
-[https://unahur.vmdigitai.com/redes-front/users](https://unahur.vmdigitai.com/redes-front/users)
+## 📁 Postman
 
-Por otro lado les dejamos la documentació de los endpoint para que también la puedan revisar y armar siguiendo este link
+Incluye colección de pruebas para:
 
-[https://unahur.vmdigitai.com/swagger/](https://unahur.vmdigitai.com/swagger/)
+- Crear usuarios y posts
+- Seguir usuarios
+- Comentar publicaciones
+- Ver estructuras JSON esperadas
 
-# Bonus
+---
 
-- Hace el upload de las imganes que se asocian a un POST que lo guarden en una carpeta de imagenes dentro del servidor web.
-- ¿Cómo modelarías que un usuario pueda "seguir" a otros usuarios, y a su vez ser seguido por muchos? Followers
-- Con la información de los post no varia muy seguido que estrategias podrian utilizar la que la información no sea constantemente consultada desde la base de datos.
+## 🧠 Observaciones
+
+- Los comentarios más antiguos que X meses no se muestran (`.env → FECHAMAXCOMMENTS`).
+- Las imágenes se almacenan como **URLs**, no como archivos físicos.
+- Se implementó un sistema básico de **followers** entre usuarios.
+- Redis está disponible para mejorar el cacheado de consultas (opcional).
+
+---
+
+## 👥 Autores
+
+- Juanma Britez
+- Vanina Cejas
+- Ezequiel Escobar
+
+---
+

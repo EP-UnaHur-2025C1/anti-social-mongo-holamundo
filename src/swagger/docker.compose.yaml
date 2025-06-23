@@ -64,15 +64,6 @@ components:
         nombre:
           type: string
           example: Etiqueta1
-    CommentTag:
-      type: object
-      properties:
-        postId:
-          type: string
-          example: Este es un ejemplo
-        tagId:
-          type: string
-          example: Este es un ejemplo
     Image:
       type: object
       properties:
@@ -556,47 +547,7 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
-  /comment-tags:
-    post:
-      summary: Asignar un tag a un post
-      tags:
-        - CommentTags
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CommentTag'
-      responses:
-        '201':
-          description: Relación creada exitosamente
-    delete:
-      summary: Eliminar un tag de un post
-      tags:
-        - CommentTags
-      responses:
-        '204':
-          description: Relación eliminada exitosamente
-  /comment-tags/post/{postId}:
-    get:
-      summary: Obtener todos los tags de un post
-      tags:
-        - CommentTags
-      parameters:
-        - name: postId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: ID del post para obtener sus tags
-      responses:
-        '200':
-          description: Lista de tags asociados al post
-        '204':
-          description: No hay contenido
-        500:
-          $ref: '#/components/responses/ServerError'
-  /images:
+  /imagenes:
     get:
       summary: Obtener todos los archivos
       tags:
@@ -649,7 +600,7 @@ paths:
           description: Tipo de archivo no permitido 
         500:
           $ref: '#/components/responses/ServerError'
-  /images/{urlImg}:
+  /imagenes/{urlImg}:
     put:
       summary: Actualizar un archivo existente
       tags:

@@ -1,11 +1,8 @@
 const {Router} = require('express');
 const Tag = require('../Schemas/tagSchema');
 const schemaValidator = require('../Schemas/schemaValidator');
-
 const genericMiddleware = require('../middleware/generic.middleware');
-
 const tagController = require('../controllers/tags.controller');
-
 const router = Router();
 
 

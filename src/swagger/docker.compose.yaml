@@ -23,7 +23,7 @@ components:
     Usuarios:
       type: object
       properties:
-        nickName:
+        nickname:
           type: string
           example: usuario123
         email:
@@ -41,12 +41,12 @@ components:
     Comment:
       type: object
       required:
-        - nickName
+        - nickname
         - postId
         - descripcion
         - comentario
       properties:
-        nickName:
+        nickname:
           type: string
           example: "1"
         postId:
@@ -304,12 +304,16 @@ paths:
                 descripcion:
                   type: string
                   example: "Este es un post de ejemplo"
-                nickName:
+                nickname:
                   type: string
-                  example: "1"
+                  example: "juanmabritez"
+                pathImg:
+                  type: string
+                  example: "images/post/viaje.jpg"
               required:
                 - descripcion
-                - nickName
+                - nickname
+                - pathImg
       responses:
         '201':
           description: Publicación creada exitosamente

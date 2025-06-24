@@ -4,6 +4,7 @@ const middleware = {}
 
 const validateId = (Model) => async(req, res, next) => {
     const {id} = req.params;
+    console.log('AAAAAAAAAAAAAAA ID: ', id);
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(400).json({error: `El ID '${id}' no es válido. `})
     }

@@ -2,6 +2,7 @@ const Tag = require('../Schemas/tagSchema')
 const Post = require('../Schemas/postSchema')
 const controller = {}
 const mongoose = require('../db/mongo.db').mongoose;
+const redisClient = require('../config/redisClient');
 
 const getTags = async (req, res) => {
   const cachedTags = await redisClient.get("tags");

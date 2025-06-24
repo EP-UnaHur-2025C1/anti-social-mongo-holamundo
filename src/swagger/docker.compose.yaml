@@ -161,7 +161,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '204':
           description: Usuario eliminado exitosamente
@@ -173,12 +173,12 @@ paths:
       tags:
         - Usuarios
       parameters:
-        - name: id
-          in: path
+        - in: path
+          name: id
           required: true
-          descripcion: ID del usuario a seguir
           schema:
-            type: integer
+            type: string
+          description: ID del usuario que desea seguir a otro
       requestBody:
         required: true
         content:
@@ -186,47 +186,84 @@ paths:
             schema:
               type: object
               properties:
-                seguidorId:
-                  type: integer
-                  example: 1
+                id:
+                  type: string
+                  example: 685a3b9971fc927e51aaf560
                   description: ID del usuario que sigue
+                followId:
+                  type: string
+                  example: 685a3b9971fc927e51aaf561
+                  description: ID del usuario a seguir
+              required:
+                - id
+                - followId
       responses:
         '201':
-          description: Ahora seguis a este usuario
+          description: Ahora seguís a este usuario
         '409':
-          description: Ya seguis a este usuario
-        400:
+          description: Ya seguís a este usuario
+        '400':
           $ref: '#/components/responses/BadRequest'
-        500:
+        '500':
           $ref: '#/components/responses/ServerError'
 
-  /usuarios/{id}/seguidoss: 
     delete:
       summary: Dejar de seguir a un usuario
+      tags:
+        - Usuarios
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del usuario que desea dejar de seguir a otro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 685a3b9971fc927e51aaf560
+                  description: ID del usuario que unfollowea
+                followId:
+                  type: string
+                  example: 685a3b9971fc927e51aaf561
+                  description: ID del usuario a dejar de seguir
+              required:
+                - id
+                - followId
+      responses:
+        '204':
+          description: Ahora no seguís a este usuario
+        '404':
+          description: No estás siguiendo a este usuario
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      summary: Obtener una lista de usuarios seguidos
       tags:
         - Usuarios
       parameters:
         - name: id
           in: path
           required: true
-          description: ID del usuario a dejar de seguir
+          description: ID del usuario
           schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                seguidorId:
-                  type: integer
-                  example: 1
+            type: string
       responses:
-        '204':
-          description: Ahora no seguis a este usuario
-        404:
-          description: "No estas siguiendo a este usuario"
+        '200':
+          description: Lista de usuarios seguidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuarios'
         500:
           $ref: '#/components/responses/ServerError'
   /usuarios/{id}/seguidores:
@@ -240,33 +277,10 @@ paths:
           required: true
           description: ID del usuario
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Lista de seguidores
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Usuarios'
-        500:
-          $ref: '#/components/responses/ServerError'
-  /usuarios/{id}/seguidosa:
-    get:
-      summary: Obtener una lista de usuarios seguidos
-      tags:
-        - Usuarios
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID del usuario
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Lista de usuarios seguidos
           content:
             application/json:
               schema:
@@ -346,7 +360,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+          example: '685a3b9971fc927e51aaf560'
       responses:
         '200':
           description: Publicación encontrada
@@ -364,7 +379,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -391,7 +406,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Publicación eliminada exitosamente junto con todos sus recursos asociados
@@ -417,7 +432,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Usuario asociado al post
@@ -462,7 +477,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -487,7 +502,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '204':
           description: Comentario eliminado exitosamente
@@ -519,7 +534,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tag'
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: Contenido actualizado del post
+                imagenes:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Nuevas imágenes para agregar al post
       responses:
         '201':
           description: Etiqueta creada exitosamente
@@ -533,7 +558,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
           description: ID de la etiqueta a actualizar
       requestBody:
         required: true
@@ -559,7 +584,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
           description: ID de la etiqueta a eliminar
       responses:
         '204':

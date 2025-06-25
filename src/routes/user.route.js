@@ -63,7 +63,7 @@ router.delete("/usuarios/:id/seguidos",///El Usuario actual deja de seguir al Us
     userController.unfollowUser
 )
 
-router.get("/usuario/:id/seguidores",//Obtiene todos los Usuarios que siguen a este ID
+router.get("/usuarios/:id/seguidores",//Obtiene todos los Usuarios que siguen a este ID
     genericMiddleware.validateId(Usuario),
     userController.getFollowers
 )

@@ -46,12 +46,12 @@ const initData = async() => {
             userId: usuarios[0]._id, // Relación directa
             comentarios: [
                 {
-                descripcion: "buenaaa",
+                texto: "buenaaa",
                 fecha: new Date('2022-09-01T00:00:00Z'),
                 userId: usuarios[1]._id
                 },
                 {
-                descripcion: "crack",
+                texto: "crack",
                 fecha: Date.now(),
                 userId: usuarios[1]._id
                 },
@@ -64,12 +64,12 @@ const initData = async() => {
             userId: usuarios[1]._id, // Relación directa
             comentarios: [
                 {
-                descripcion: "locura",
+                texto: "locura",
                 fecha: Date.now(),
                 userId: usuarios[0]._id, // Relación directa
                 },
                 {
-                descripcion: "insolito",
+                texto: "insolito",
                 fecha: new Date('2023-10-01T00:00:00Z'),
                 userId: usuarios[2]._id
                 },
@@ -82,12 +82,12 @@ const initData = async() => {
             userId: usuarios[2]._id, // Relación directa
             comentarios: [
                 {
-                descripcion: "cociname eso",
+                texto: "cociname eso",
                 fecha: new Date('2024-10-01T00:00:00Z'),
                 userId: usuarios[1]._id
                 },
                 {
-                descripcion: "rompiste",
+                texto: "rompiste",
                 fecha: Date.now(),
                 userId: usuarios[0]._id // Relación directa
                 },

@@ -100,7 +100,7 @@ npm run dev
 | `npm run dev` | Inicia con nodemon y Docker (modo desarrollo) |
 | `npm run start` | Ejecuta el proyecto en producción |
 | `npm run docker:up` / `docker:down` | Control de contenedores |
-
+| `docker compose logs -f apiimage1` | Ver logs del servicio de la API |
 ---
 
 ## 🧪 Funcionalidades

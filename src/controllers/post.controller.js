@@ -41,8 +41,26 @@ const getPostById = async (req, res) => {
 controller.getPostById = getPostById;
 
 const createPost = async (req, res) => {
-  const post = await Post.create(req.body);
-  await redisClient.del("posts"); // Limpiar la caché de posts en Redis
+  let postData = { ...req.body };
+
+  if (postData.nickname) {
+    const user = await Usuario.findOne({ nickname: postData.nickname });
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    postData.userId = user._id;
+    delete postData.nickname;
+  }
+
+  const post = await Post.create(postData);
+
+  // Relacionar post con el usuario
+  await Usuario.findByIdAndUpdate(
+    postData.userId,
+    { $push: { postId: post._id } }
+  );
+
+  await redisClient.del("posts");
   res.status(201).json(post);
 };
 
@@ -215,7 +233,81 @@ const addUsersByPost = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 controller.addUsersByPost = addUsersByPost;
+
+const getAllComments = async (req, res) => {
+  try {
+    const posts = await Post.find({}, { comentarios: 1 }).populate('comentarios.userId', 'nickname email pathImgPerfil');
+    
+    // Aplanar todos los comentarios en un solo array
+    const allComments = posts.flatMap(post => 
+      post.comentarios.map(com => ({
+        ...com.toObject(),
+        postId: post._id
+      }))
+    );
+
+    res.status(200).json(allComments);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los comentarios", error: error.message });
+  }
+};
+controller.getAllComments = getAllComments;
+
+
+const updateComment = async (req, res) => {
+  const { idPost, idComment } = req.params;
+  const { texto, visible } = req.body;
+
+  try {
+    const post = await Post.findById(idPost);
+    if (!post) {
+      return res.status(404).json({ message: "Post no encontrado" });
+    }
+
+    const comment = post.comentarios.id(idComment);
+    if (!comment) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    if (texto !== undefined) comment.texto = texto;
+    if (visible !== undefined) comment.visible = visible;
+
+    await post.save();
+    res.status(200).json({ message: "Comentario actualizado", comment });
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar el comentario", error: error.message });
+  }
+};
+controller.updateComment = updateComment;
+
+
+const deleteComment = async (req, res) => {
+  const { idPost, idComment } = req.params;
+
+  try {
+    const post = await Post.findById(idPost);
+    if (!post) {
+      return res.status(404).json({ message: "Post no encontrado" });
+    }
+
+    const comment = post.comentarios.id(idComment);
+    if (!comment) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    // ✅ Elimina el comentario embebido correctamente
+    comment.deleteOne(); // usa deleteOne() en vez de remove()
+
+    await post.save();
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al eliminar el comentario",
+      error: error.message,
+    });
+  }
+};
+controller.deleteComment = deleteComment;
 
 module.exports = controller;

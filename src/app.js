@@ -28,3 +28,16 @@ app.listen(PORT, async () => {
   await initData();
   console.log(`🚀 Aplicación iniciada en el puerto ${PORT} - http://localhost:${PORT}/usuarios`);
 });
+
+
+
+
+
+
+/**
+ * * TODO: 
+ *  -get/post/id/usuario - que no devuelva la contraseña
+ *  -get/post/ - que devuelva su propio id seria util
+ *  -put/post/id/ - ¿deberia poder editar los comentarios?
+ * 
+ */

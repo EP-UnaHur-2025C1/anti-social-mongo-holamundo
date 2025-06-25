@@ -247,6 +247,8 @@ const addCommentsByUser = async (req, res) => {
   }
 } 
 controller.addCommentsByUser = addCommentsByUser
+
+
 const getFollowers = async (req, res) => {
   const { id } = req.params; // ID del usuario
   const cachedFollowers = await redisClient.get(`followers:user:${id}`);
@@ -271,7 +273,10 @@ const getFollowers = async (req, res) => {
 }
 }
 controller.getFollowers = getFollowers
+
+
 const getFollowing = async (req, res) => {
+  console.log("BBBBBBBBBBBBBBB: ", req.params.id, " -|-|--|--|-|- ", req.body);
   const { id } = req.params; // ID del usuario
   const cachedFollowing = await redisClient.get(`following:user:${id}`);
   if (cachedFollowing) {
@@ -294,6 +299,8 @@ const getFollowing = async (req, res) => {
 } 
 }
 controller.getFollowing = getFollowing
+
+
 const followUser = async (req, res) => {
   const { id } = req.params; // ID del usuario que sigue
   const { followId } = req.body; // ID del usuario a seguir
@@ -332,6 +339,8 @@ const followUser = async (req, res) => {
   }
 }
 controller.followUser = followUser
+
+
 const unfollowUser = async (req, res) => {
   const { id } = req.params; // ID del usuario que deja de seguir
   const { followId } = req.body; // ID del usuario a dejar de seguir

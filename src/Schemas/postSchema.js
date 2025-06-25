@@ -28,26 +28,18 @@ const postSchema = new mongoose.Schema({
   },
   comentarios: [{ // Relación incrustada con los comentarios
     
-    descripcion: {
+    texto: {
       type: String,
-      required: [true, 'La descripción del comentario es obligatoria']
+      required: [true, 'El texto del comentario es obligatorio']
     },
     fecha: {
       type: Date,
       required: [true, 'La fecha del comentario es obligatoria'],
-      default: Date.now,
+      default: Date.now
     },
     visible: {
       type: Boolean,
-      //quiero que sea un atributo calculado, que sea true si la fecha del comentario es menor a la fecha máxima de comentarios la cual esta en el .env
-      validate: {
-        validator: async function() {
-          const fechaMaxima = await new Date(process.env.FECHAMAXCOMMENTS);
-          return this.fecha <= fechaMaxima;
-        },
-        message: 'La fecha del comentario debe ser menor o igual a la fecha máxima de comentarios'
-      }    
-      
+      default: true, // Indica si el comentario es visible  
     },
     userId: { 
       type: Schema.Types.ObjectId, 
@@ -64,10 +56,11 @@ const postSchema = new mongoose.Schema({
 
 postSchema.set('toJSON', {
   transform: (_, ret) => {
-    delete ret.__v;
+    ret.id = ret._id;
     delete ret._id;
+    delete ret.__v;
   }
-})
+});
 
 const Post = mongoose.model("Post", postSchema);
 module.exports = Post;

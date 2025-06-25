@@ -23,7 +23,7 @@ components:
     Usuarios:
       type: object
       properties:
-        nickName:
+        nickname:
           type: string
           example: usuario123
         email:
@@ -41,12 +41,12 @@ components:
     Comment:
       type: object
       required:
-        - nickName
+        - nickname
         - postId
         - descripcion
         - comentario
       properties:
-        nickName:
+        nickname:
           type: string
           example: "1"
         postId:
@@ -161,7 +161,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '204':
           description: Usuario eliminado exitosamente
@@ -173,12 +173,12 @@ paths:
       tags:
         - Usuarios
       parameters:
-        - name: id
-          in: path
+        - in: path
+          name: id
           required: true
-          descripcion: ID del usuario a seguir
           schema:
-            type: integer
+            type: string
+          description: ID del usuario que desea seguir a otro
       requestBody:
         required: true
         content:
@@ -186,47 +186,84 @@ paths:
             schema:
               type: object
               properties:
-                seguidorId:
-                  type: integer
-                  example: 1
+                id:
+                  type: string
+                  example: 685a3b9971fc927e51aaf560
                   description: ID del usuario que sigue
+                followId:
+                  type: string
+                  example: 685a3b9971fc927e51aaf561
+                  description: ID del usuario a seguir
+              required:
+                - id
+                - followId
       responses:
         '201':
-          description: Ahora seguis a este usuario
+          description: Ahora seguís a este usuario
         '409':
-          description: Ya seguis a este usuario
-        400:
+          description: Ya seguís a este usuario
+        '400':
           $ref: '#/components/responses/BadRequest'
-        500:
+        '500':
           $ref: '#/components/responses/ServerError'
 
-  /usuarios/{id}/seguidoss: 
     delete:
       summary: Dejar de seguir a un usuario
+      tags:
+        - Usuarios
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del usuario que desea dejar de seguir a otro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 685a3b9971fc927e51aaf560
+                  description: ID del usuario que unfollowea
+                followId:
+                  type: string
+                  example: 685a3b9971fc927e51aaf561
+                  description: ID del usuario a dejar de seguir
+              required:
+                - id
+                - followId
+      responses:
+        '204':
+          description: Ahora no seguís a este usuario
+        '404':
+          description: No estás siguiendo a este usuario
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      summary: Obtener una lista de usuarios seguidos
       tags:
         - Usuarios
       parameters:
         - name: id
           in: path
           required: true
-          description: ID del usuario a dejar de seguir
+          description: ID del usuario
           schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                seguidorId:
-                  type: integer
-                  example: 1
+            type: string
       responses:
-        '204':
-          description: Ahora no seguis a este usuario
-        404:
-          description: "No estas siguiendo a este usuario"
+        '200':
+          description: Lista de usuarios seguidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuarios'
         500:
           $ref: '#/components/responses/ServerError'
   /usuarios/{id}/seguidores:
@@ -240,33 +277,10 @@ paths:
           required: true
           description: ID del usuario
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Lista de seguidores
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Usuarios'
-        500:
-          $ref: '#/components/responses/ServerError'
-  /usuarios/{id}/seguidosa:
-    get:
-      summary: Obtener una lista de usuarios seguidos
-      tags:
-        - Usuarios
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID del usuario
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Lista de usuarios seguidos
           content:
             application/json:
               schema:
@@ -304,12 +318,17 @@ paths:
                 descripcion:
                   type: string
                   example: "Este es un post de ejemplo"
-                nickName:
+                userId:
                   type: string
-                  example: "1"
+                  example: 685b5f25ba6479a410a6a51d
+                  description: ID del usuario autor del post
+                pathImg:
+                  type: string
+                  example: "images/post/viaje.jpg"
               required:
                 - descripcion
-                - nickName
+                - nickname
+                - pathImg
       responses:
         '201':
           description: Publicación creada exitosamente
@@ -342,7 +361,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+          example: '685a3b9971fc927e51aaf560'
       responses:
         '200':
           description: Publicación encontrada
@@ -360,7 +380,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -387,7 +407,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Publicación eliminada exitosamente junto con todos sus recursos asociados
@@ -413,7 +433,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Usuario asociado al post
@@ -421,11 +441,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
-  /comments:
+  /comentarios:
     get:
       summary: Obtener todos los comentarios
       tags:
-        - Comments
+        - Comentarios
       responses:
         '200':
           description: Lista de comentarios
@@ -435,61 +455,94 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+  /post/{id}/comentarios:
     post:
-      summary: Crear un nuevo comentario
+      summary: Agrega un comentario a un post
       tags:
-        - Comments
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Comment'
-      responses:
-        '201':
-          description: Comentario creado exitosamente
-  /comments/{id}:
-    put:
-      summary: Actualizar un comentario por ID
-      tags:
-        - Comments
+        - Comentarios
       parameters:
-        - name: id
-          in: path
+        - in: path
+          name: id
           required: true
           schema:
-            type: integer
+            type: string
+          description: ID del post al que se le quiere agregar un comentario
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Comment'
+              type: object
+              properties:
+                texto:
+                  type: string
+                userId:
+                  type: string
+              required:
+                - texto
+                - userId
       responses:
         '201':
-          description: Comentario actualizado exitosamente
-        400:
-          $ref: '#/components/responses/BadRequest'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
+          description: Comentario agregado correctamente
+  /post/{idPost}/comentarios/{idComment}:
+    put:
+      summary: Actualizar un comentario existente
+      tags:
+        - Comentarios
+      parameters:
+        - in: path
+          name: idPost
+          required: true
+          schema:
+            type: string
+          description: ID del post
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: string
+          description: ID del comentario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                texto:
+                  type: string
+                visible:
+                  type: boolean
+      responses:
+        '200':
+          description: Comentario actualizado con éxito
+        '404':
+          description: Comentario o post no encontrado
+        '500':
           $ref: '#/components/responses/ServerError'
     delete:
       summary: Eliminar un comentario por ID
       tags:
-        - Comments
+        - Comentarios
       parameters:
-        - name: id
-          in: path
+        - in: path
+          name: idPost
           required: true
           schema:
-            type: integer
+            type: string
+          description: ID del post
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: string
+          description: ID del comentario
       responses:
         '204':
           description: Comentario eliminado exitosamente
-        404:
+        '404':
           $ref: '#/components/responses/NotFound'
-        500:
+        '500':
           $ref: '#/components/responses/ServerError'
   /tags:
     get:
@@ -515,7 +568,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tag'
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: Contenido actualizado del post
+                imagenes:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Nuevas imágenes para agregar al post
       responses:
         '201':
           description: Etiqueta creada exitosamente
@@ -529,7 +592,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
           description: ID de la etiqueta a actualizar
       requestBody:
         required: true
@@ -555,7 +618,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
           description: ID de la etiqueta a eliminar
       responses:
         '204':

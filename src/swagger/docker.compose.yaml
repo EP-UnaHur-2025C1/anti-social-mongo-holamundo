@@ -318,9 +318,10 @@ paths:
                 descripcion:
                   type: string
                   example: "Este es un post de ejemplo"
-                nickname:
+                userId:
                   type: string
-                  example: "juanmabritez"
+                  example: 685b5f25ba6479a410a6a51d
+                  description: ID del usuario autor del post
                 pathImg:
                   type: string
                   example: "images/post/viaje.jpg"

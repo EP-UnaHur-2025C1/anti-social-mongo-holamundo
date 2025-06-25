@@ -254,4 +254,31 @@ const getAllComments = async (req, res) => {
 };
 controller.getAllComments = getAllComments;
 
+
+const updateComment = async (req, res) => {
+  const { idPost, idComment } = req.params;
+  const { texto, visible } = req.body;
+
+  try {
+    const post = await Post.findById(idPost);
+    if (!post) {
+      return res.status(404).json({ message: "Post no encontrado" });
+    }
+
+    const comment = post.comentarios.id(idComment);
+    if (!comment) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    if (texto !== undefined) comment.texto = texto;
+    if (visible !== undefined) comment.visible = visible;
+
+    await post.save();
+    res.status(200).json({ message: "Comentario actualizado", comment });
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar el comentario", error: error.message });
+  }
+};
+controller.updateComment = updateComment;
+
 module.exports = controller;

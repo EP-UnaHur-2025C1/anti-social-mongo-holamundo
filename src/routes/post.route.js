@@ -51,6 +51,9 @@ router.post("/post/:id/comentarios",//Agrega un comentario al Post
 
 router.get("/comentarios", postController.getAllComments); // Obtiene todos los comentarios de todos los posts
 
-
+router.put("/post/:idPost/comentarios/:idComment",
+  genericMiddleware.validateId(Post, 'idPost'),
+  postController.updateComment
+);
 
 module.exports = router

@@ -470,6 +470,42 @@ paths:
       responses:
         '201':
           description: Comentario agregado correctamente
+  /post/{idPost}/comentarios/{idComment}:
+    put:
+      summary: Actualizar un comentario existente
+      tags:
+        - Comentarios
+      parameters:
+        - in: path
+          name: idPost
+          required: true
+          schema:
+            type: string
+          description: ID del post
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: string
+          description: ID del comentario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                texto:
+                  type: string
+                visible:
+                  type: boolean
+      responses:
+        '200':
+          description: Comentario actualizado con éxito
+        '404':
+          description: Comentario o post no encontrado
+        '500':
+          $ref: '#/components/responses/ServerError'
   /comentarios:
     get:
       summary: Obtener todos los comentarios
@@ -485,31 +521,6 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
   /comentarios/{id}:
-    put:
-      summary: Actualizar un comentario por ID
-      tags:
-        - Comentarios
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Comment'
-      responses:
-        '201':
-          description: Comentario actualizado exitosamente
-        400:
-          $ref: '#/components/responses/BadRequest'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
     delete:
       summary: Eliminar un comentario por ID
       tags:

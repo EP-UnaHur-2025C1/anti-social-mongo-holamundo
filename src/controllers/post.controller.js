@@ -281,4 +281,33 @@ const updateComment = async (req, res) => {
 };
 controller.updateComment = updateComment;
 
+
+const deleteComment = async (req, res) => {
+  const { idPost, idComment } = req.params;
+
+  try {
+    const post = await Post.findById(idPost);
+    if (!post) {
+      return res.status(404).json({ message: "Post no encontrado" });
+    }
+
+    const comment = post.comentarios.id(idComment);
+    if (!comment) {
+      return res.status(404).json({ message: "Comentario no encontrado" });
+    }
+
+    // ✅ Elimina el comentario embebido correctamente
+    comment.deleteOne(); // usa deleteOne() en vez de remove()
+
+    await post.save();
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({
+      message: "Error al eliminar el comentario",
+      error: error.message,
+    });
+  }
+};
+controller.deleteComment = deleteComment;
+
 module.exports = controller;

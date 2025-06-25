@@ -506,6 +506,30 @@ paths:
           description: Comentario o post no encontrado
         '500':
           $ref: '#/components/responses/ServerError'
+    delete:
+      summary: Eliminar un comentario por ID
+      tags:
+        - Comentarios
+      parameters:
+        - in: path
+          name: idPost
+          required: true
+          schema:
+            type: string
+          description: ID del post
+        - in: path
+          name: idComment
+          required: true
+          schema:
+            type: string
+          description: ID del comentario
+      responses:
+        '204':
+          description: Comentario eliminado exitosamente
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
   /comentarios:
     get:
       summary: Obtener todos los comentarios
@@ -516,24 +540,6 @@ paths:
           description: Lista de comentarios
         '204':
           description: No hay contenido
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/ServerError'
-  /comentarios/{id}:
-    delete:
-      summary: Eliminar un comentario por ID
-      tags:
-        - Comentarios
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Comentario eliminado exitosamente
         404:
           $ref: '#/components/responses/NotFound'
         500:

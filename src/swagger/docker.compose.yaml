@@ -441,11 +441,40 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
-  /comments:
+  /post/{id}/comentarios:
+    post:
+      summary: Agrega un comentario a un post
+      tags:
+        - Comentarios
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del post al que se le quiere agregar un comentario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                texto:
+                  type: string
+                userId:
+                  type: string
+              required:
+                - texto
+                - userId
+      responses:
+        '201':
+          description: Comentario agregado correctamente
+  /comentarios:
     get:
       summary: Obtener todos los comentarios
       tags:
-        - Comments
+        - Comentarios
       responses:
         '200':
           description: Lista de comentarios
@@ -455,24 +484,11 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
-    post:
-      summary: Crear un nuevo comentario
-      tags:
-        - Comments
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Comment'
-      responses:
-        '201':
-          description: Comentario creado exitosamente
-  /comments/{id}:
+  /comentarios/{id}:
     put:
       summary: Actualizar un comentario por ID
       tags:
-        - Comments
+        - Comentarios
       parameters:
         - name: id
           in: path
@@ -497,7 +513,7 @@ paths:
     delete:
       summary: Eliminar un comentario por ID
       tags:
-        - Comments
+        - Comentarios
       parameters:
         - name: id
           in: path

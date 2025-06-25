@@ -233,7 +233,25 @@ const addUsersByPost = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 controller.addUsersByPost = addUsersByPost;
+
+const getAllComments = async (req, res) => {
+  try {
+    const posts = await Post.find({}, { comentarios: 1 }).populate('comentarios.userId', 'nickname email pathImgPerfil');
+    
+    // Aplanar todos los comentarios en un solo array
+    const allComments = posts.flatMap(post => 
+      post.comentarios.map(com => ({
+        ...com.toObject(),
+        postId: post._id
+      }))
+    );
+
+    res.status(200).json(allComments);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener los comentarios", error: error.message });
+  }
+};
+controller.getAllComments = getAllComments;
 
 module.exports = controller;

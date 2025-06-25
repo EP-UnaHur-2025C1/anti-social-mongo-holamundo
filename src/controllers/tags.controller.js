@@ -64,6 +64,8 @@ const getTagById = async (req, res) => {
 }
 };
 controller.getTagById = getTagById
+
+
 const createTag = async (req, res) => {
   const { nombre, postId } = req.body;
   
@@ -85,6 +87,8 @@ const createTag = async (req, res) => {
   }
 };
 controller.createTag = createTag
+
+
 const updateTag = async (req, res) => {
   const { id } = req.params;
   const { nombre, postId } = req.body;

@@ -558,7 +558,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
-  /tag:
     post:
       summary: Crear una nueva etiqueta
       tags:
@@ -570,19 +569,19 @@ paths:
             schema:
               type: object
               properties:
-                content:
+                nombre:
                   type: string
-                  example: Contenido actualizado del post
-                imagenes:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-                  description: Nuevas imágenes para agregar al post
+                  example: "Nueva etiqueta"
+                postId:
+                  type: string
+                  example: "685a3b9971fc927e51aaf560"
+              required:
+                - nombre
+                - postId
       responses:
         '201':
           description: Etiqueta creada exitosamente
-  /tag/{id}:
+  /tags/{id}:
     put:
       summary: Actualizar una etiqueta por ID
       tags:
@@ -594,6 +593,12 @@ paths:
           schema:
             type: string
           description: ID de la etiqueta a actualizar
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del post al que pertenece la etiqueta
       requestBody:
         required: true
         content:

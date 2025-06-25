@@ -39,6 +39,5 @@ app.listen(PORT, async () => {
  *  -get/post/id/usuario - que no devuelva la contraseña
  *  -get/post/ - que devuelva su propio id seria util
  *  -put/post/id/ - ¿deberia poder editar los comentarios?
- *  -al crear un post o un usuario, parece no crearse la relacion entre estos.
  * 
  */

@@ -41,8 +41,26 @@ const getPostById = async (req, res) => {
 controller.getPostById = getPostById;
 
 const createPost = async (req, res) => {
-  const post = await Post.create(req.body);
-  await redisClient.del("posts"); // Limpiar la caché de posts en Redis
+  let postData = { ...req.body };
+
+  if (postData.nickname) {
+    const user = await Usuario.findOne({ nickname: postData.nickname });
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    postData.userId = user._id;
+    delete postData.nickname;
+  }
+
+  const post = await Post.create(postData);
+
+  // Relacionar post con el usuario
+  await Usuario.findByIdAndUpdate(
+    postData.userId,
+    { $push: { postId: post._id } }
+  );
+
+  await redisClient.del("posts");
   res.status(201).json(post);
 };
 

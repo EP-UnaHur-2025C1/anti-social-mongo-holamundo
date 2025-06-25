@@ -441,6 +441,20 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+  /comentarios:
+    get:
+      summary: Obtener todos los comentarios
+      tags:
+        - Comentarios
+      responses:
+        '200':
+          description: Lista de comentarios
+        '204':
+          description: No hay contenido
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
   /post/{id}/comentarios:
     post:
       summary: Agrega un comentario a un post
@@ -529,20 +543,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
-          $ref: '#/components/responses/ServerError'
-  /comentarios:
-    get:
-      summary: Obtener todos los comentarios
-      tags:
-        - Comentarios
-      responses:
-        '200':
-          description: Lista de comentarios
-        '204':
-          description: No hay contenido
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
           $ref: '#/components/responses/ServerError'
   /tags:
     get:

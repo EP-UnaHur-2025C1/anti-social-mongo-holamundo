@@ -2,3 +2,6 @@ node_modules
 
 # Ignore database files
 mongo_data
+
+# Ignore redis data
+redis_data

@@ -10,27 +10,27 @@ router.get("/tags", //Obtiene todas las Tag
     tagController.getTags
 )
 
-router.post("/tags", //Crear una nueva Tag
+router.post("/tag", //Crear una nueva Tag
     schemaValidator(Tag),
     tagController.createTag
 )
 
-router.put("/tags/:id",//Actualizar un Tag por su ID
+router.put("/tag/:id",//Actualizar un Tag por su ID
     genericMiddleware.validateId(Tag),
     tagController.updateTag
 )
 
-router.delete("/tags/:id",//Elimina un Tag por su ID
+router.delete("/tag/:id",//Elimina un Tag por su ID
     genericMiddleware.validateId(Tag),
     tagController.deleteById
 )
 
-router.get("/tags/:id",//Obtiene los datos de un solo Tag por su ID
+router.get("/tag/:id",//Obtiene los datos de un solo Tag por su ID
     genericMiddleware.validateId(Tag),
     tagController.getTagById
 )
 
-router.get("/tags/:id/posts",//Obtiene los Post que tiene asociado por el ID
+router.get("/tag/:id/posts",//Obtiene los Post que tiene asociado por el ID
     genericMiddleware.validateId(Tag),
     tagController.getPostsByTag
 )

@@ -50,8 +50,8 @@ components:
           type: string
           example: "1"
         postId:
-          type: integer
-          example: 1
+          type: string
+          example: "685cccab3c581bf262bb940b"
         descripcion:
           type: string
           example: "buen meme."
@@ -72,8 +72,8 @@ components:
           example: "/uploads/imagenes-1620123456789.jpg"
           description: Ruta de la imagen almacenada
         postId:
-          type: integer
-          example: 1
+          type: string
+          example: "685cccab3c581bf262bb940b"
 paths:
   /usuarios:
     get:
@@ -558,6 +558,7 @@ paths:
           $ref: '#/components/responses/NotFound'
         500:
           $ref: '#/components/responses/ServerError'
+  /tag:
     post:
       summary: Crear una nueva etiqueta
       tags:
@@ -571,17 +572,18 @@ paths:
               properties:
                 nombre:
                   type: string
-                  example: "Nueva etiqueta"
+                  example: NuevoTag
                 postId:
-                  type: string
-                  example: "685a3b9971fc927e51aaf560"
-              required:
-                - nombre
-                - postId
+                  type: array
+                  items:
+                    type: string
+                    example: idsDePostsAsociadosOEliminarComillas
+                    format: binary
+                  description: Nuevas imágenes para agregar al post
       responses:
         '201':
           description: Etiqueta creada exitosamente
-  /tags/{id}:
+  /tag/{id}:
     put:
       summary: Actualizar una etiqueta por ID
       tags:
@@ -593,18 +595,24 @@ paths:
           schema:
             type: string
           description: ID de la etiqueta a actualizar
-        - name: postId
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID del post al que pertenece la etiqueta
+
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tag'
+              schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: NuevoNombreDeTag
+                postId:
+                  type: array
+                  items:
+                    type: string
+                    example: idsDePostsAsociadosOEliminarComillas
+                    format: binary
       responses:
         '201':
           description: Etiqueta actualizada exitosamente
@@ -684,8 +692,8 @@ paths:
                   example: "/uploads/imagenes-1620123456789.jpg"
                   description: Ruta de la imagen almacenada
                 postId: 
-                  type: integer
-                  example: 1
+                  type: string
+                  example: "685cccab3c581bf262bb940b"
       responses:
         '201':
           description: Archivos creados exitosamente
@@ -727,8 +735,8 @@ paths:
                   example: "/uploads/imagenes-1620123456789.jpg"
                   description: Ruta de la imagen almacenada
                 postId: 
-                  type: integer
-                  example: 1
+                  type: string
+                  example: "685ccf8a90407bf68956a17c"
       responses:
         '200':
           description: Archivo actualizado exitosamente

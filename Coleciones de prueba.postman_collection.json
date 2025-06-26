@@ -467,6 +467,124 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "http://localhost:4500/post/ POSTEO POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"descripcion\": \"post para probar los meses filtrados a juanma\",\r\n  \"userId\": \"685c939185673af925e08717\",\r\n  \"pathImg\": \"images/post/viaje.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4500/post/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"post",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/posts/ GET POSTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4500/posts/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/post/685cc1fa31bcf924feccead0 GET BY ID POST",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4500/post/685cc1fa31bcf924feccead0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"post",
+						"685cc1fa31bcf924feccead0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/post/685cc1fa31bcf924feccead0/comentarios COMMENT POST BY ID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"texto\": \"este en un comentario desde postman\",\r\n  \"userId\": \"685c939185673af925e08717\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4500/post/685cc1fa31bcf924feccead0/comentarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"post",
+						"685cc1fa31bcf924feccead0",
+						"comentarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4500/comentarios GET COMENTARIOS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4500/comentarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4500",
+					"path": [
+						"comentarios"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

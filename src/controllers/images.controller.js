@@ -2,20 +2,26 @@ const Images = require("../Schemas/imageSchema");
 const mongoose = require("../db/mongo.db").mongoose;
 const redisClient = require("../config/redisClient");
 const controller = {};
+
+
 const getAllImages = async (req, res) => {
+  let images;
   const cachedImages = await redisClient.get("images");
+
   if (cachedImages) {
     return res.status(200).json(JSON.parse(cachedImages));
-  }else{
-  const images = await Images.find().populate("postId");
-  await redisClient.set("images", JSON.stringify(images), {
-    EX: 3600, // Expira en 1 hora
-    NX: true, // Solo establece si no existe
-  });
+  } else {
+    images = await Images.find().populate("postId");
+    await redisClient.set("images", JSON.stringify(images), {
+      EX: 3600, // Expira en 1 hora
+      NX: true, // Solo establece si no existe
+    });
   }
+
   res.json(images);
 };
 controller.getAllImages = getAllImages;
+
 
 const getImagesByPost = async (req, res) => {
   const { id } = req.params;
@@ -35,28 +41,27 @@ controller.getImagesByPost = getImagesByPost;
 
 const createImage = async (req, res) => {
   try {
-    if (!req.body.urlImg || !req.body.postId) {
-      return res.status(400).json({ error: "urlImg y postId son requeridos" });}
-    // Verifica si la imagen ya existe en la base de datos (opcional, según tu lógica)
+    console.log("Creando imagen con datos:", req.body);
+    const { urlImg, postId } = req.body; // ← MOVER ESTO ARRIBA
+    if (!urlImg || !postId) {
+      return res.status(400).json({ error: "urlImg y postId son requeridos" });
+    }
+
     const exists = await Images.findOne({ urlImg, postId });
     if (exists) {
       return res.status(409).json({ error: "La imagen ya existe para este post" });
-     }
+    }
 
-    // Si los datos son válidos, crea la imagen y actualiza la caché de Redis
-    const { urlImg, postId } = req.body;
     const image = new Images({ urlImg, postId });
     await image.save();
-
-    // Limpiar la caché de imágenes en Redis
     await redisClient.del("images");
     await redisClient.del(`images:post:${postId}`);
 
     return res.status(201).json(image);
-    } catch (err) {
-    return res.status(500).json({ error: "Error al crear la imagen" });
+  } catch (err) {
+    return res.status(500).json({ error: "Error al crear la imagen", details: err.message });
+  }
 };
-}
 controller.createImage = createImage;
 
 const updateImage = async (req, res) => {
@@ -81,18 +86,26 @@ const updateImage = async (req, res) => {
 controller.updateImage = updateImage;
 
 const deleteImage = async (req, res) => {
-  const { id } = req.params;
   try {
+    console.log("Eliminando imagen con ID:", req.params.id);
+    const { id } = req.params;
     const deletedImage = await Images.findByIdAndDelete(id);
+
     if (!deletedImage) {
       return res.status(404).json({ error: "Imagen no encontrada" });
     }
-    res.json({ mensaje: "Imagen eliminada correctamente" });
+
+    // Limpiar caché
+    await redisClient.del("images");
+    await redisClient.del(`images:post:${deletedImage.postId}`);
+
+    return res.status(200).json({ message: "Archivo eliminado correctamente" });
   } catch (err) {
-    res.status(500).json({ error: "Error al eliminar la imagen" });
+    return res.status(500).json({
+      message: "Error al eliminar la imagen",
+      error: err.message,
+    });
   }
-  await redisClient.del("images"); // Limpiar la caché de imágenes en Redis
-  await redisClient.del(`images:post:${deletedImage.postId}`); // Limpiar
 };
 controller.deleteImage = deleteImage;
 

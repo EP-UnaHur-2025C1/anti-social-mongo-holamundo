@@ -5,3 +5,5 @@ mongo_data
 
 # Ignore redis data
 redis_data
+# Also ignore files inside redis_data
+redis_data/*

@@ -18,7 +18,8 @@ const getAllPost = async (req, res) => {
     const ahora = new Date();
     const postsFiltrados = posts.map(post => {
       const comentariosFiltrados = post.comentarios.filter(comentario => {
-        const tiempoTranscurrido = ahora - comentario.fecha;
+        const fechaComentario = new Date(comentario.fecha);
+        const tiempoTranscurrido = ahora - fechaComentario;
         const mesesTranscurridos = tiempoTranscurrido / (1000 * 60 * 60 * 24 * 30.44);
         return mesesTranscurridos < MAX_MESES;
       });
@@ -53,7 +54,8 @@ const getPostById = async (req, res) => {
     }    
     const ahora = new Date();
     const comentariosFiltrados = post.comentarios.filter(comentario => {
-      const tiempoTranscurrido = ahora - comentario.fecha;
+      const fechaComentario = new Date(comentario.fecha);
+      const tiempoTranscurrido = ahora - fechaComentario;
       const mesesTranscurridos = tiempoTranscurrido / (1000 * 60 * 60 * 24 * 30.44);
       return mesesTranscurridos < MAX_MESES;
     });

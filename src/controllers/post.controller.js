@@ -3,21 +3,38 @@ const Usuario = require("../Schemas/userSchema");
 const controller = {};
 const mongoose = require("../db/mongo.db").mongoose;
 const redisClient = require("../config/redisClient");
+const MAX_MESES = parseInt(process.env.TIEMPO_COMENTARIO_VISIBLE) || 6;
 
 const getAllPost = async (req, res) => {
   const cachedPosts = await redisClient.get("posts");
   if (cachedPosts) {
     return res.status(200).json(JSON.parse(cachedPosts));
-  } else {
+  } //else {
+  try{
     const posts = await Post.find().populate(
       "userId",
       "nickname email pathImgPerfil"
     );
-    await redisClient.set("posts", JSON.stringify(posts), {
+    const ahora = new Date();
+    const postsFiltrados = posts.map(post => {
+      const comentariosFiltrados = post.comentarios.filter(comentario => {
+        const tiempoTranscurrido = ahora - comentario.fecha;
+        const mesesTranscurridos = tiempoTranscurrido / (1000 * 60 * 60 * 24 * 30.44);
+        return mesesTranscurridos < MAX_MESES;
+      });
+      return{
+        ...post.toObject(),
+        comentarios: comentariosFiltrados,
+      };
+    });
+    await redisClient.set("posts", JSON.stringify(postsFiltrados), {
       EX: 3600, // Expira en 1 hora
       NX: true, // Solo establece si no existe
     });
-    return res.status(200).json(posts);
+    return res.status(200).json(postsFiltrados);
+  } catch(error){
+    console.error(error);
+    res.status(500).json({mensaje: "Error al obtener los posteos"})
   }
 };
 
@@ -28,13 +45,31 @@ const getPostById = async (req, res) => {
   const cachedPost = await redisClient.get(`post:${id}`);
   if (cachedPost) {
     return res.status(200).json(JSON.parse(cachedPost));
-  } else {
+  } //else {
+  try {
     const post = await Post.findById(id);
-    await redisClient.set(`post:${id}`, JSON.stringify(post), {
-      EX: 3600, // Expira en 1 hora
-      NX: true, // Solo establece si no existe
+    if (!post) {
+      return res.status(404).json({ mensaje: "Posteo no encontrado" });
+    }    
+    const ahora = new Date();
+    const comentariosFiltrados = post.comentarios.filter(comentario => {
+      const tiempoTranscurrido = ahora - comentario.fecha;
+      const mesesTranscurridos = tiempoTranscurrido / (1000 * 60 * 60 * 24 * 30.44);
+      return mesesTranscurridos < MAX_MESES;
     });
-    res.status(200).json(post);
+    const posteoFiltrado = {
+      ...post.toObject(),
+      comentarios: comentariosFiltrados,
+    };
+
+    await redisClient.set(`post:${id}`, JSON.stringify(posteoFiltrado), {
+      EX: 3600,
+      NX: true, 
+    });
+    res.status(200).json(posteoFiltrado);
+  } catch(error){
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al obtener el posteo" });
   }
 };
 
